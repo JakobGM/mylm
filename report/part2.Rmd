@@ -1,0 +1,56 @@
+# Part 2: Simple linear regression with the `mylm` package
+
+### a) Estimation of Coefficients
+
+```{r eval = TRUE}
+library(mylm)
+model1 <- mylm(wages ~ education, data = SLID)
+print(model1)
+```
+
+```{r eval = TRUE}
+model1b <- lm(wages ~ education, data = SLID)
+print(model1b)
+```
+
+
+### b) Estimation of Covariance Matrix
+
+
+```{r eval = TRUE}
+summary(model1)
+```
+
+
+### c) Residual Plot
+
+```{r eval = TRUE}
+plot(model1)
+```
+
+
+### d) Residual Analysis
+
+**Q:** What is the residual sum of squares (SSE) and the degrees of freedom for this model? 
+
+**A:** Answer 1.
+
+
+**Q:** What is total sum of squares (SST) for this model? Test the significance of the regression using a \(\chi^2\)-test. 
+
+**A:** Answer 2.
+
+
+**Q:** What is the relationship between the \(\chi^2\)- and \(z\)-statistic in simple linear regression? Find the critical value(s) for both tests.
+
+**A:** Answer 3.
+
+
+### e) Coefficient of Determination
+
+What is the "coefficient of determination" ($R^2$) for this model and how do you interpret this value?
+Modify the function `summary.mylm` so that it shows this value.
+
+```{r eval = TRUE}
+summary(model1)
+```

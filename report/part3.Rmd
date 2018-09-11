@@ -1,0 +1,17 @@
+# Part 3: Multiple linear regression
+
+### a) Multiple Linear Regression
+```{r eval = FALSE}
+model2 <- mylm(y ~ x1 + x2, data = myframe)
+print(model2)
+```
+
+
+### b) Model Analysis
+```{r eval = FALSE}
+summary(model2)
+```
+
+
+### c) Effect of Education and Age on Wages
+Analysis.

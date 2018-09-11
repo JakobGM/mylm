@@ -1,0 +1,28 @@
+# Part 1: Explanatory analysis of the dataset
+
+### Importing the data set
+
+The dataset we will work on is from Canada, and consists of 3987 observations on the following 5 variables:
+
+* `wages`, composite hourly wage rate from all jobs
+* `education`, number of years in schooling
+* `age`, in years
+* `sex`, Male or Female
+* `language`, English, French or Other
+
+We will store this data set in a `SLID` dataframe, and remove all rows with incomplete data:
+
+```{r, eval = TRUE}
+library(car)
+data(SLID, package = "carData")
+SLID <- SLID[complete.cases(SLID),]
+```
+
+### a) Analyze relationships between some of the variables
+
+First, let's plot a diagnostic plot of all the variables:
+
+```{r, cache = TRUE}
+library(GGally)
+ggpairs(data = SLID)
+```

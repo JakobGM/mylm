@@ -1,0 +1,39 @@
+--- 
+title: "TMA4315: Compulsory exercise 1" 
+subtitle: "Group 0: Name1, Name2"
+date: "`r format(Sys.time(), '%d.%m.%Y')`" # the current date, can be regular text as well
+output: 
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+#   pdf_document:
+#    toc: false
+#    toc_depth: 2
+---
+
+```{r setup, include = FALSE}
+library(formatR)
+showsol <- FALSE
+library(knitr)
+opts_chunk$set(tidy.opts = list(width.cutoff = 68), tidy = TRUE, warning = FALSE, error = FALSE, message = FALSE, echo = TRUE)
+```
+
+```{r child = 'part1.Rmd'}
+```
+
+```{r child = 'part2.Rmd'}
+```
+
+```{r child = 'part3.Rmd'}
+```
+
+```{r child = 'part4.Rmd'}
+```
+
+
+
+
+
+
+
