@@ -26,3 +26,19 @@ First, let's plot a diagnostic plot of all the variables:
 library(GGally)
 ggpairs(data = SLID)
 ```
+
+We can now make some remarks regarding the relationship between `wages` and some of the explanatory variables.
+
+#### Effect of `education` on `wages`
+
+There is correlation of `0.306` between `education` and `wages`, meaning that you would *expect* more educated workers to earn more. 
+
+Looking at the scatter plot, it shows that there is a much greater spread in education among low paid workers, while better wages require a minimum level of education in most cases.
+
+With other words, a high degree of education does not guarantee greater wages, while high wages require higher education.
+
+*PS: Much of the same can be said on the effect of `age` on `wages`.*
+
+#### Effect of `sex` on `wages`
+
+Men earn on average more than women, as low paid jobs are over-represented by women, and high paid jobs are over-represented by men. The extremal values are still approximately equal.
