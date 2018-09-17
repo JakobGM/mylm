@@ -186,6 +186,12 @@ Version: 0.3.6
 Hash: 87bd72cdfc46f686bbd46b180cb5f0b5
 Requires: Rcpp, digest
 
+Package: httpuv
+Source: CRAN
+Version: 1.4.5
+Hash: dc5eb6250b7b292593c6070ea8316187
+Requires: BH, Rcpp, later, promises
+
 Package: jsonlite
 Source: CRAN
 Version: 1.5
@@ -201,6 +207,12 @@ Package: labeling
 Source: CRAN
 Version: 0.3
 Hash: ecf589b42cd284b03a4beb9665482d3e
+
+Package: later
+Source: CRAN
+Version: 0.7.4
+Hash: 639840d5341c9e10be00a6e1c2554faf
+Requires: BH, Rcpp, rlang
 
 Package: lazyeval
 Source: CRAN
@@ -298,6 +310,12 @@ Version: 1.2.0
 Hash: 0ff5f631b66daf57857f28062f3e6f30
 Requires: R6, crayon, hms, prettyunits
 
+Package: promises
+Source: CRAN
+Version: 1.0.1
+Hash: 2a8b28513de0474be7328a8396de2a9f
+Requires: R6, Rcpp, later, magrittr, rlang
+
 Package: quantreg
 Source: CRAN
 Version: 5.36
@@ -363,6 +381,18 @@ Version: 1.0.0
 Hash: 17b6945d25b9288cdf03f5e5005842dc
 Requires: R6, RColorBrewer, Rcpp, labeling, munsell, viridisLite
 
+Package: shiny
+Source: CRAN
+Version: 1.1.0
+Hash: ab653b45dba6dc82eef68fb1e18a3b1a
+Requires: R6, crayon, digest, htmltools, httpuv, jsonlite, later, mime,
+    promises, rlang, sourcetools, xtable
+
+Package: sourcetools
+Source: CRAN
+Version: 0.1.7
+Hash: d093478ac90064e670cd4bf1a99b47b6
+
 Package: sp
 Source: CRAN
 Version: 1.3-1
@@ -410,6 +440,11 @@ Package: xfun
 Source: CRAN
 Version: 0.3
 Hash: 3b1cb5fdcfb96c88e3f9ab0239fbd048
+
+Package: xtable
+Source: CRAN
+Version: 1.8-3
+Hash: 857a3e7f33eac216c8d0d2fdbf0a3798
 
 Package: yaml
 Source: CRAN
