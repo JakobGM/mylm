@@ -42,3 +42,42 @@ With other words, a high degree of education does not guarantee greater wages, w
 #### Effect of `sex` on `wages`
 
 Men earn on average more than women, as low paid jobs are over-represented by women, and high paid jobs are over-represented by men. The extremal values are still approximately equal.
+
+
+#### Assumptions of the MLR analysis
+
+Some assumptions must be made regarding the data if we are to perform a multiple linear regression analysis on the data.
+
+We construct a classical linear model of the form:
+$$
+\bf{Y} = \bf{X} \beta + \bf{\varepsilon}
+$$
+Let's explain the notation:
+
+- We have $n$ observations and $k$ covariates.
+- Denote $p := k + 1$, as we will include an intercept parameter.
+- $\bf Y$ is a $n \times 1$ column vector containing respective response values for each observation.
+- $\bf X$ is a $n \times p$ matrix, containing induvidual observations on each row, and respective covariates on each column. The first column contains solely `1`s, as this is the intercept "covariate".
+- $\bf beta$ is $p \times 1$ column vector containing model parameters $[\beta_0, \beta_1, ..., \beta_k]^T$.
+- $\varepsilon$ is the error term, being a $n \times 1$ column vector.
+
+Now onto the assumptions we must make regarding this classical linear model.
+
+1) $\text{E}[\varepsilon] = \bf 0$
+
+> The sum of error terms must converge to zero as $n$ approaches infinity.
+
+2) $\mathrm{Cov}(\varepsilon) = \mathrm{E}(\varepsilon\varepsilon^T) = \sigma^2 \bf I$
+
+> Error terms must be completely independent and have equal variance.
+
+3) $\mathrm{rank}(\bf{X}) = k + 1 = p$
+
+> $\bf X$ must have full rank, i.e. no column should be a linear combination of the other columns.
+> We must also have $p <= n$. In most cases we have $p << n$.
+
+In addition, if we want a classical *normal* linear regression model, we must assume:
+
+4) $\varepsilon ~ \text{N}_n(\bf 0, \sigma^2 \bf{I})$
+
+> The error terms must be *normally* distributed, in addition to the earlier assumptions.
