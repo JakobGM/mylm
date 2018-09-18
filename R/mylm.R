@@ -28,7 +28,7 @@ mylm <- function(formula, data = list(), contrasts = NULL, ...){
   beta <- inv_XtX %*% t(X) %*% y
 
   # The fitted values are easily calculated
-  Y_hat <- X %*% beta
+  fitted_values <- X %*% beta
 
   # These are the predicted values for the simplest possible model,
   # i.e. no covariates at all, only an intercept.
@@ -107,6 +107,7 @@ summary.mylm <- function(object, ...){
 plot.mylm <- function(object, ...){
   # Code here is used when plot(object) is used on objects of class "mylm"
   plot(object$fitted_values, object$residuals, xlab="Fitted values", ylab="Residuals")
+  abline(a=0, b=0, col="gray", lty=3)
 }
 
 
