@@ -23,28 +23,35 @@ mylm <- function(formula, data = list(), contrasts = NULL, ...){
   # Add code here to calculate coefficients, residuals, fitted values, etc...
   # and store the results in the list est
   inv_XtX <- solve(t(X) %*% X)
-  coeff <- inv_XtX %*% t(X) %*% y
-  fitted_values <- X %*% coeff
-  fitted_values_H0 <- rep(1,length(fitted_values))*mean(y)
+
+  # This is our estimation for \beta
+  beta <- inv_XtX %*% t(X) %*% y
+
+  # The fitted values are easily calculated
+  Y_hat <- X %*% beta
+
+  # These are the predicted values for the simplest possible model,
+  # i.e. no covariates at all, only an intercept.
+  Y_hat_H0 <- rep(1,length(fitted_values))*mean(y)
   residuals <- y - fitted_values
   SSE <- sum( (y - fitted_values)^2 )
-  SST <- sum( (y - fitted_values_H0)^2 )
+  SST <- sum( (y - Y_hat_H0)^2 )
   sigma_tilde <- SSE/length(y)
   covariance_matrix <- sigma_tilde * solve(t(X) %*% X)
   #z-values and p-values
-  t_value <- vector("numeric", length(coeff))
-  p_value <- vector("numeric", length(coeff))
-  for(i in 1:length(coeff)){
-    t_value[i] <- (coeff[i] - 0)/sqrt(diag(covariance_matrix)[i])
+  t_value <- vector("numeric", length(beta))
+  p_value <- vector("numeric", length(beta))
+  for(i in 1:length(beta)){
+    t_value[i] <- (beta[i] - 0)/sqrt(diag(covariance_matrix)[i])
     p_value[i] <- 2*pnorm(abs(t_value[i]), lower.tail=FALSE)
 
   }
-  F_obs = ((length(fitted_values) - length(coeff))*(SST - SSE)) / (SSE*(length(coeff)-1))
-  Chi <- (length(fitted_values) - length(coeff)) * F_obs
+  F_obs = ((length(fitted_values) - length(beta))*(SST - SSE)) / (SSE*(length(beta)-1))
+  Chi <- (length(fitted_values) - length(beta)) * F_obs
   p_chi <- pchisq(Chi, df=1, lower.tail=FALSE)
   Rsq <- 1 - SSE/SST
 
-  est <- list(coefficients = coeff, pvalues = p_value,
+  est <- list(coefficients = beta, pvalues = p_value,
               zvalues = t_value, covmatrix =covariance_matrix,
               fitted_values = fitted_values, residuals = residuals,
               fstatistic = F_obs, SSE = SSE, SST = SST,
