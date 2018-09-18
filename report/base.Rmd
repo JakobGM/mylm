@@ -1,6 +1,6 @@
 --- 
 title: "TMA4315: Compulsory exercise 1" 
-subtitle: "Group 0: Magnus Liland, Name2"
+subtitle: "Group 13: Magnus Liland, Jakob Gerhard Martinussen"
 date: "`r format(Sys.time(), '%d.%m.%Y')`" # the current date, can be regular text as well
 output: 
   html_document:
