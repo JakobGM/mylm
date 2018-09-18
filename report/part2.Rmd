@@ -1,7 +1,12 @@
 # Part 2: Simple linear regression with the `mylm` package
+```{r, eval = TRUE, echo=FALSE}
+library(car)
+data(SLID, package = "carData")
+SLID <- SLID[complete.cases(SLID),]
+```
 
 ### a) Estimation of Coefficients
-
+TODO: Write down all formulas needed to implement print and summary
 ```{r eval = TRUE}
 library(mylm)
 model1 <- mylm(wages ~ education, data = SLID)
@@ -16,29 +21,38 @@ print(model1b)
 
 ### b) Estimation of Covariance Matrix
 
-
 ```{r eval = TRUE}
 summary(model1)
 ```
 
+```{r eval = TRUE}
+summary(model1b)
+```
+
 
 ### c) Residual Plot
-
+Explain task (c)
 ```{r eval = TRUE}
 plot(model1)
 ```
 
+```{r eval = TRUE}
+plot(model1b)
+```
+It seems that the mean of the residuals is approx. 0 - good
+However, asymmetry above - thicker positive tail
+Hint of multiplicative residuals - not independet residuals.
 
 ### d) Residual Analysis
 
 **Q:** What is the residual sum of squares (SSE) and the degrees of freedom for this model? 
 
-**A:** Answer 1.
+**A:** SSE is `r toString(round(model1$SSE, 0))`, with number of degrees of freedom $n-p =$ `r length(model1$fitted_values)` $-$ `r length(model1$coefficients)` = `r length(model1$fitted_values) - length(model1$coefficients)`
 
 
-**Q:** What is total sum of squares (SST) for this model? Test the significance of the regression using a \(\chi^2\)-test. 
+**Q:** What is total sum of squares (SST) for this model? Test the significance of the regression using a $\chi^2$-test. 
 
-**A:** Answer 2.
+**A:** SST is `r toString(round(model1$SST, 0))`, with p-value of the $\chi^2$-test equal to `r model1$p_chi`
 
 
 **Q:** What is the relationship between the \(\chi^2\)- and \(z\)-statistic in simple linear regression? Find the critical value(s) for both tests.
