@@ -5,7 +5,7 @@ date: "`r format(Sys.time(), '%d.%m.%Y')`" # the current date, can be regular te
 output: 
   html_document:
     toc: yes
-    toc_depth: 2
+    toc_depth: 3
     toc_float: yes
 #   pdf_document:
 #    toc: false
