@@ -10,6 +10,23 @@ if(FALSE){ #Part3c
 }
 
 
+if(FALSE) { #Part4
+  model4a <- mylm(formula = wages ~ sex + age + language + I(education^2), data=SLID)
+  summary(model4a)
+  #negative intercept
+  #aggregate response in education
+  plot(model4a)
+  model4b <- mylm(formula = wages ~ age + language + language*age, data=SLID)
+  summary(model4b)
+  plot(model4b)
+  model4c <- mylm(formula = wages ~ -1 + education, data=SLID)
+  summary(model4c)
+  plot(model4c)
+  #altough some of these plots do not look horrible, they all have a clear trend.
+  #They should be completeley random, which they are not.
+  #The intercept are clearly different from 0, indicating it should be included.
+}
+
 # Select Build, Build and reload to build and lode into the R-session.
 
 mylm <- function(formula, data = list(), contrasts = NULL, ...){
