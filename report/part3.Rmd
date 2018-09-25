@@ -1,17 +1,26 @@
 # Part 3: Multiple linear regression
 
 ### a) Multiple Linear Regression
-```{r eval = FALSE}
-model2 <- mylm(y ~ x1 + x2, data = myframe)
+```{r}
+model1 <- mylm(wages ~ education, data = SLID)
+model2 <- mylm(wages ~ education + age, data = SLID)
 print(model2)
 ```
 
 
 ### b) Model Analysis
-```{r eval = FALSE}
+```{r}
 summary(model2)
 ```
-
+The estimated parameters for the multiple linear regression case are calculated as describes in part 1.
 
 ### c) Effect of Education and Age on Wages
-Analysis.
+We begin by looking at the estimated coefficients in all three models again
+```{r}
+model1
+model2
+model3 = mylm(wages~age, data = SLID)
+model3
+```
+
+We observe that the parameter estimates differ, due to the fact that the covariates are dependent of each other.

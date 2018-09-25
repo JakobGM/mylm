@@ -17,21 +17,31 @@ print(model1)
 model1b <- lm(wages ~ education, data = SLID)
 print(model1b)
 ```
-
+We see that we get the same output, so our function is good so far.
 
 ### b) Estimation of Covariance Matrix
+By implementing the `summary` function, we are able to calculate the estimates and standard errors of the intercept and regression coefficient for this model, and test their significance. The parameter estimates are calculated by the general formula 
 
-```{r eval = TRUE}
+$$
+\hat{\mathbf{\beta}} = (X^TX)^{-1}X^T\mathbf{y}.
+$$
+The interpretation of these estimates is that as the corresponding $x_i$ increases by one, $y$ is expected to increase by $\hat{beta}_i$.
+This gives us the estimate for each response as $X^T\hat\beta$ and the standard errors as 
+$$
+\hat{\mathbf{e}} = \mathbf{y}-X^T\hat{\beta}.
+$$
+```{r}
 summary(model1)
 ```
-
-```{r eval = TRUE}
+We see that both `z-value`s are very large for a standard normal distribution, and correspondingly, the p-values are very small, which seems quite reasonable.
+We may also compare to the model implemented with the regular `lm` function:
+```{r}
 summary(model1b)
 ```
-
+We see that the results are the same, except for the z-values, which are not supposed to be the same.
 
 ### c) Residual Plot
-Explain task (c)
+We then implement the plot function, in order to plot the fitted values against the residuals.
 ```{r eval = TRUE}
 plot(model1)
 ```
@@ -54,10 +64,21 @@ Hint of multiplicative residuals - not independet residuals.
 
 **A:** SST is `r toString(round(model1$SST, 0))`, with p-value of the $\chi^2$-test equal to `r model1$p_chi`
 
+In order to test the significance of regression we calculate the F-statistic
+
+$$
+F = \frac{n-p}{k}\frac{R^2}{1-R^2},
+$$
+where $R^2 = 1-\frac{SSE}{SST}$ is the coefficient of determination (see next point). Since this has a Fisher distribution with $k$ and $n-p$ degrees of freedom, we know that $k\cdot F$ has a chi squared distribution with $k$ degrees of freedom. This is what we use to calculate the p-value.
+
 
 **Q:** What is the relationship between the \(\chi^2\)- and \(z\)-statistic in simple linear regression? Find the critical value(s) for both tests.
 
-**A:** Answer 3.
+**A:** In the simple linear regression case we have that the \(\chi^2\)-statistic is the squared of the \(z\)-statistic. This we can also see from the `summary` of `model1`: 
+```{r}
+model1$chistatistic
+model1$zvalues[2]^2
+```
 
 
 ### e) Coefficient of Determination
