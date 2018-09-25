@@ -16,7 +16,7 @@ if(FALSE) { #Part4
   #negative intercept
   #aggregate response in education
   plot(model4a)
-  model4b <- mylm(formula = wages ~ age + language + language*age, data=SLID)
+  model4b <- mylm(formula = wages ~ language*age, data=SLID)
   summary(model4b)
   plot(model4b)
   model4c <- mylm(formula = wages ~ -1 + education, data=SLID)
@@ -64,7 +64,7 @@ mylm <- function(formula, data = list(), contrasts = NULL, ...){
 
   }
   F_obs = ((length(fitted_values) - length(beta))*(SST - SSE)) / (SSE*(length(beta)-1))
-  Chi <- (length(fitted_values) - length(beta)) * F_obs
+  Chi <- (length(beta)-1) * F_obs
   p_chi <- pchisq(Chi, df=1, lower.tail=FALSE)
   Rsq <- 1 - SSE/SST
 
