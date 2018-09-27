@@ -66,7 +66,7 @@ summary(model4c)
 ```
 
 First thing to notice from this model is that, as there is now interaction term, the only coefficient, `education`, is highly significant.
-The statistics does not make sense in this case, as can be discarded.
+The statistics does not make sense in this case, and can therefore be discarded.
 In all the previous models the interaction term has been significantly different from 0, indicating that it should be included - there is no indication it should be dropped.
 
 #### Residual analysis
