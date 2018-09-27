@@ -6,7 +6,8 @@ data(SLID, package = "carData")
 SLID <- SLID[complete.cases(SLID),]
 ```
 
-In the following section the `mylm` function will be employed to three different model suggestions. To evaluate the fit of these models we'll print the summary of the models to discuss the p-values of the parameters, as well as the residual plot to see if there are any clear trends in the residuals, or discrepancies from the normal assumption.
+In the following section the `mylm` function will be employed to three different model suggestions.
+To evaluate the fit of these models we'll print the summary of the models to discuss the p-values of the parameters, as well as the residual plots to see if there are any clear trends in the residuals, or any discrepancies from the MLR assumptions.
 
 ### Model 1: `sex`, `age`, `language` and `education^2`
 
@@ -14,16 +15,22 @@ In the following section the `mylm` function will be employed to three different
 model4a <- mylm(formula = wages ~ sex + age + language + I(education^2), data=SLID)
 summary(model4a)
 ```
-From the summary of the model fit above the first thing to note is that the intercept is negative, implying that the base-case (all covariates 0) has negative wage. This is non-intuitive, and an indication that the model fit is perhaps not the best.
+From the summary of the model fit above the first thing to note is that the intercept is negative, implying that the "base case" (all covariates set equal to 0) has negative wage.
+This may be considered non-intuitive, and an indication that the model fit is perhaps not the best.
 
-Further, the p-values for `sex`, `age`and `education^2`indicate that all these parameters have a significant effect on wages, while the effect from `language` is not quite as clear.
+What is the base case in this model? A female, English speaking newborn with no education. You could therefore argue that the non-intuitive intercept is acceptable, as this is not in the domain of interest.
+
+Further, the p-values for `sex`, `age` and `education^2` indicate that all these parameters have a significant effect on wages, while the effect from `language` is not quite as clear.
 
 Finally, note that the effect from `education` is aggregated, as the effect of wages from an increase in `education` will be quadratic rather than linear. There is no clear indication why this type of response is better than a linear response.
+
+Now we plot the residuals of this model:
 
 ```{r}
 plot(model4a)
 ```
-In the plot of the residuals a clear trend is visible. From low fitted values the residuals are small, while they increase with larger fitted values. In addition, it seems that the residuals are somewhat asymmetric, with larger positive values than negative. This further support the claim that the model fit is not particularly good.
+
+In the plot of the residuals a clear trend is visible. From low fitted values the residuals are small, while they increase with larger fitted values. In addition, it seems that the residuals are somewhat asymmetric, with larger positive values than negative. This further support the claim that the model fit is not particularly good, as these observations do not coincide with the assumptions made regarding the distribution of $\varepsilon$.
 
 
 ### Model 2: `age`, `language` and interaction term
