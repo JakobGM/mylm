@@ -7,6 +7,11 @@ SLID <- SLID[complete.cases(SLID),]
 
 ### a) Estimation of Coefficients
 TODO: Write down all formulas needed to implement print and summary
+
+The parameter estimates are calculated by the general formula 
+$$
+\hat{\mathbf{\beta}} = (X^TX)^{-1}X^T\mathbf{y}.
+$$
 ```{r eval = TRUE}
 library(mylm)
 model1 <- mylm(wages ~ education, data = SLID)
@@ -20,16 +25,44 @@ print(model1b)
 We see that we get the same output, so our function is good so far.
 
 ### b) Estimation of Covariance Matrix
-By implementing the `summary` function, we are able to calculate the estimates and standard errors of the intercept and regression coefficient for this model, and test their significance. The parameter estimates are calculated by the general formula 
-
+To calculate the covariance matrix, we use that
 $$
-\hat{\mathbf{\beta}} = (X^TX)^{-1}X^T\mathbf{y}.
+\widehat{\text{Cov}}(\mathbf{\hat\beta}) = \hat\sigma^2({\bf X}^T{\bf X})^{-1}.
 $$
-The interpretation of these estimates is that as the corresponding $x_i$ increases by one, $y$ is expected to increase by $\hat{beta}_i$.
+This gives us the matrix
+```{r}
+model1$covmatrix
+```
+By implementing the `summary` function, we are able to calculate the estimates and standard errors of the intercept and regression coefficient for this model, and test their significance. 
+The interpretation of the parameter estimates is that as the corresponding $x_i$ increases by one, $y$ is expected to increase by $\hat{\beta}_i$.
 This gives us the estimate for each response as $X^T\hat\beta$ and the standard errors as 
 $$
-\hat{\mathbf{e}} = \mathbf{y}-X^T\hat{\beta}.
+\hat{\mathbf{e}} = \mathbf{Y}-X^T\hat{\beta}.
 $$
+
+If model assumptions hold, the coefficient estimators are distributed as follows:
+
+$$
+\hat{\beta}\sim N_{p}(\beta,\sigma^2({\bf X}^T{\bf X})^{-1})
+$$
+
+To obtain the test statistic for each of the parameters, we calculate the test statistic under the null hypothesis that the true parameter value is 0. That is 
+$$
+z_i = \frac{\hat{\beta}_i-0}{\sqrt{ \hat{\sigma^2} ({{\bf X}^T{\bf X})^{-1}}_{ii}}},
+$$
+where $\hat{\sigma^2}$ is given by
+$$
+\hat{\sigma}^2=\frac{1}{n-p}({\bf Y}-{\bf X}\hat{\beta})^T({\bf Y}-{\bf X}\hat{\beta})=\frac{\text{SSE}}{n-p},
+$$
+with
+$$
+\frac{(n-p)\hat{\sigma}^2}{\sigma^2} \sim \chi^2_{n-p}.
+$$
+We approximate the distribution of $Z_i$ as a normal distribution, although, given the distribution of $\hat{\sigma}^2$, it is actually distributed according to a $t$-distribution $n-p$ degrees of freedom. However, when $n$ is large it is reasonable to approximate this distribution by a normal distribution. The corresponding p-value for the test statistic is the probability of observing the test statistic or a more extreme outcome, i.e.
+$$
+p_i = P( Z >|z_i|).
+$$
+
 ```{r}
 summary(model1)
 ```
@@ -46,12 +79,8 @@ We then implement the plot function, in order to plot the fitted values against 
 plot(model1)
 ```
 
-```{r eval = TRUE}
-plot(model1b)
-```
-It seems that the mean of the residuals is approx. 0 - good
-However, asymmetry above - thicker positive tail
-Hint of multiplicative residuals - not independet residuals.
+It seems that the mean of the residuals is approximately 0 - that is good, as this is one of our assumptions.
+However, there is asymmetry, as there is a thicker positive tail. We notice a hint of multiplicative residuals, which means the residuals are not independent of the fitted values.
 
 ### d) Residual Analysis
 
@@ -82,10 +111,12 @@ model1$zvalues[2]^2
 
 
 ### e) Coefficient of Determination
+The coefficient of determination $R^2$ gives the proportion of variance in the data described by the model. We calculate it as mentioned above,
 
-What is the "coefficient of determination" ($R^2$) for this model and how do you interpret this value?
-Modify the function `summary.mylm` so that it shows this value.
+$$
+R^2 = 1-\frac{SSE}{SST},
+$$
 
 ```{r eval = TRUE}
-summary(model1)
+model1$Rsq
 ```
