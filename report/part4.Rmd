@@ -77,3 +77,7 @@ plot(model4c)
 
 The residual plot seem to have a decreasing trend with the fitted values, as all residuals are larger than zero fro small fitted values, while the majority seem to be negative for larger fitted values.
 This residual plot does also exhibit asymmetric behaviour, similar to the previous models.
+
+#### Improvement
+
+An improvement to this model could be to include an intercept, for the reasons mentioned above.
