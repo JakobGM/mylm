@@ -6,71 +6,133 @@ SLID <- SLID[complete.cases(SLID),]
 ```
 
 ### a) Estimation of Coefficients
-TODO: Write down all formulas needed to implement print and summary
 
-The parameter estimates are calculated by the general formula 
+#### Theory
+
+The parameter estimates are calculated by using the maximum likelihood estimator:
 $$
-\hat{\mathbf{\beta}} = (X^TX)^{-1}X^T\mathbf{y}.
+\hat{\mathbf{\beta}} = (X^TX)^{-1}X^T\mathbf{Y}.
 $$
+
+This estimator has the distribution $\hat{\beta}\sim N_{p}(\beta,\sigma^2({\bf X}^T{\bf X})^{-1})$.
+
+#### Implementation
+
+This parameter estimation is implemented in the `mylm` module and the results can be shown with `print.mylm` on the resulting model object.
+
 ```{r eval = TRUE}
 library(mylm)
 model1 <- mylm(wages ~ education, data = SLID)
 print(model1)
 ```
 
+We can compare these results with the `lm` module in R's standard library
+
 ```{r eval = TRUE}
 model1b <- lm(wages ~ education, data = SLID)
 print(model1b)
 ```
-We see that we get the same output, so our function is good so far.
+
+The results are numerically identical, as intended.
 
 ### b) Estimation of Covariance Matrix
-To calculate the covariance matrix, we use that
+
+#### Theory
+
+##### Estimators
+
+The restricted maximum likelihood estimator for $\sigma^2$, denoted as $\hat{\sigma}^2$, is
+
+$$
+\hat{\sigma}^2=\frac{1}{n-p}({\bf Y}-{\bf X}\hat{\beta})^T({\bf Y}-{\bf X}\hat{\beta})=\frac{\text{SSE}}{n-p},
+$$
+
+with the following chi-squared distribution
+
+$$
+\frac{(n-p)\hat{\sigma}^2}{\sigma^2} \sim \chi^2_{n-p}.
+$$
+
+We can therefore estimate the covariance matrix for the parameter estimates as
+
 $$
 \widehat{\text{Cov}}(\mathbf{\hat\beta}) = \hat\sigma^2({\bf X}^T{\bf X})^{-1}.
 $$
-This gives us the matrix
-```{r}
-model1$covmatrix
-```
-By implementing the `summary` function, we are able to calculate the estimates and standard errors of the intercept and regression coefficient for this model, and test their significance. 
-The interpretation of the parameter estimates is that as the corresponding $x_i$ increases by one, $y$ is expected to increase by $\hat{\beta}_i$.
-This gives us the estimate for each response as $X^T\hat\beta$ and the standard errors as 
+
+We will use the residuals as estimators for the standard errors
+
 $$
 \hat{\mathbf{e}} = \mathbf{Y}-X^T\hat{\beta}.
 $$
 
-If model assumptions hold, the coefficient estimators are distributed as follows:
+##### Test statistics
+
+Now let's define the following notation
 
 $$
-\hat{\beta}\sim N_{p}(\beta,\sigma^2({\bf X}^T{\bf X})^{-1})
+c_{jj} := (X^T X)^{-1}_{jj},
 $$
+
+i.e. $c_{jj}$ being the $j$th diagonal element in $(X^T X)^{-1}_{jj}$.
+
+We can now formulate a test statistic for the model parameter estimates
+
+$$
+T_j=\frac{\hat{\beta}_j-\beta_j}{\sqrt{c_{jj}}\hat{\sigma}}\sim t_{n-p}.
+$$
+
+In our implementation we will approximate this $T_j$ test statistic with the asymptotic distribution
+
+$$
+T_j=\frac{\hat{\beta}_j-\beta_j}{\sqrt{c_{jj}}\hat{\sigma}}\approx N(0,1),
+$$
+
+and denote it as $Z_j$ from here on.
+
+The distribution of $\hat{\sigma}^2$, it is actually distributed according to a $t$-distribution $n-p$ degrees of freedom. However, when $n$ is large it is reasonable to approximate this distribution by a normal distribution.
+
+The corresponding p-value for the test statistic is the probability of observing the test statistic or a more extreme outcome, i.e. in a world where the null hypothesis holds true, and there is really no dependence of the $j$th covariate on the response $Y$.
+
+This will also make the extension to generalized linear models in the next report simpler.
+
+##### Inference
 
 To obtain the test statistic for each of the parameters, we calculate the test statistic under the null hypothesis that the true parameter value is 0. That is 
+
 $$
-z_i = \frac{\hat{\beta}_i-0}{\sqrt{ \hat{\sigma^2} ({{\bf X}^T{\bf X})^{-1}}_{ii}}},
+z_i = \frac{\hat{\beta}_i-0}{\hat{\sigma} \sqrt{c_{ii}}},
 $$
-where $\hat{\sigma^2}$ is given by
+
+The $p$-values for the parameter estimates can therefore be calculated as
+
 $$
-\hat{\sigma}^2=\frac{1}{n-p}({\bf Y}-{\bf X}\hat{\beta})^T({\bf Y}-{\bf X}\hat{\beta})=\frac{\text{SSE}}{n-p},
+p_i = P(Z_i >|z_i|).
 $$
-with
-$$
-\frac{(n-p)\hat{\sigma}^2}{\sigma^2} \sim \chi^2_{n-p}.
-$$
-We approximate the distribution of $Z_i$ as a normal distribution, although, given the distribution of $\hat{\sigma}^2$, it is actually distributed according to a $t$-distribution $n-p$ degrees of freedom. However, when $n$ is large it is reasonable to approximate this distribution by a normal distribution. The corresponding p-value for the test statistic is the probability of observing the test statistic or a more extreme outcome, i.e.
-$$
-p_i = P( Z >|z_i|).
-$$
+
+#### Implementation
+
+The formula for $\widehat{\text{Cov}}(\mathbf{\hat\beta})$ has been implemented in the `mylm` package, and can be accessed from the returned model object as follows
+
+```{r}
+model1$covmatrix
+```
+
+By implementing the `summary` function, using the formulas explained above, we are able to calculate the estimates and standard errors of the intercept and regression coefficient for this model, and test their significance. 
 
 ```{r}
 summary(model1)
 ```
-We see that both `z-value`s are very large for a standard normal distribution, and correspondingly, the p-values are very small, which seems quite reasonable.
+
+The interpretation of the parameter estimates is that as the corresponding $x_i$ increases by one, $y$ is expected to increase by $\hat{\beta}_i$.
+
+We see that both `z`-values are very large for a standard normal distribution, and correspondingly, the $p$-values are very small, which seems quite reasonable.
+
 We may also compare to the model implemented with the regular `lm` function:
+
 ```{r}
 summary(model1b)
 ```
+
 We see that the results are the same, except for the z-values, which are not supposed to be the same.
 
 ### c) Residual Plot
