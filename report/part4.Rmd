@@ -6,7 +6,7 @@ data(SLID, package = "carData")
 SLID <- SLID[complete.cases(SLID),]
 ```
 
-In the following section the `mylm` function will be employed to three different model suggestions. To evaluate the fit of these models we'll print the summary of the models to discuss the p-values of the parameters, as well as the residual plot to see if there are any clear trends in the residuals, or discrepancies from the normal assummtion.
+In the following section the `mylm` function will be employed to three different model suggestions. To evaluate the fit of these models we'll print the summary of the models to discuss the p-values of the parameters, as well as the residual plot to see if there are any clear trends in the residuals, or discrepancies from the normal assumption.
 
 \subsection*{Model 1: `sex`, `age`, `language` and `education^2`}
 
@@ -18,12 +18,12 @@ From the summary of the model fit above the first thing to note is that the inte
 
 Further, the p-values for `sex`, `age`and `education^2`indicate that all these parameters have a significant effect on wages, while the effect from `language` is not quite as clear.
 
-Finally, note that the effect from `education` is aggregated, as the effect of wages from an increase in `education` will be quadratic rather than linear. There is no clear indication why this type of response is better than a linear reponse.
+Finally, note that the effect from `education` is aggregated, as the effect of wages from an increase in `education` will be quadratic rather than linear. There is no clear indication why this type of response is better than a linear response.
 
 ```{r}
 plot(model4a)
 ```
-In the plot of the residuals a clear trend is visable. From low fitted values the residuals are small, while they increase with larger fitted values. In addition, it seems that the residuals are somewhat asymmetric, with larger positive values than negative. This further support the claim that the model fit is not particularly good.
+In the plot of the residuals a clear trend is visible. From low fitted values the residuals are small, while they increase with larger fitted values. In addition, it seems that the residuals are somewhat asymmetric, with larger positive values than negative. This further support the claim that the model fit is not particularly good.
 
 
 \subsection*{Model 2: `age`, `language` and interaction term}
@@ -38,7 +38,7 @@ The first thing to notice from the summary print of the second model is that the
 ```{r}
 plot(model4b)
 ```
-The plot of the residuals exhibit a smiliar trend as the previous model, namely that the residuals increase with larger fitted values. In addition, it also seems in this case as if the residuals are asymmetric, the positive residuals are considerably larger in absolute value than the negative. The residuals plot should, if the model was correct, be completeley random. One can with some confidence say that this is not the case for this model.
+The plot of the residuals exhibit a similar trend as the previous model, namely that the residuals increase with larger fitted values. In addition, it also seems in this case as if the residuals are asymmetric, the positive residuals are considerably larger in absolute value than the negative. The residuals plot should, if the model was correct, be completely random. One can with some confidence say that this is not the case for this model.
 
 
 \subsection*{Model 3: `education` without intercation term}
@@ -47,7 +47,7 @@ The plot of the residuals exhibit a smiliar trend as the previous model, namely 
 model4c <- mylm(formula = wages ~ -1 + education, data=SLID)
 summary(model4c)
 ```
-First thing to notice from this model is that, as there is now intercation term, the only coefficent, `education`, is highly sigificant. The statistics does not make sense in this case, as can be discarded. In all the previous models the interaction term has been significaltly different from 0, indicating that it should be included - there is no indication it should be dropped.
+First thing to notice from this model is that, as there is now interaction term, the only coefficient, `education`, is highly significant. The statistics does not make sense in this case, as can be discarded. In all the previous models the interaction term has been significantly different from 0, indicating that it should be included - there is no indication it should be dropped.
 
 ```{r}
 plot(model4c)
