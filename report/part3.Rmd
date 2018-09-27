@@ -1,6 +1,7 @@
 # Part 3: Multiple linear regression
 
 ### a) Multiple Linear Regression
+The theory mentioned earlier has already been provided in vector notation, and thus applies to both simple and multiple linear regression. Here we show the functions applied on a model with multiple covariates.
 ```{r}
 model1 <- mylm(wages ~ education, data = SLID)
 model2 <- mylm(wages ~ education + age, data = SLID)
@@ -12,7 +13,7 @@ print(model2)
 ```{r}
 summary(model2)
 ```
-The estimated parameters for the multiple linear regression case are calculated as describes in part 1.
+The estimated parameters for the multiple linear regression case are calculated as described in part 1.
 
 ### c) Effect of Education and Age on Wages
 We begin by looking at the estimated coefficients in all three models again
@@ -23,4 +24,4 @@ model3 = mylm(wages~age, data = SLID)
 model3
 ```
 
-We observe that the parameter estimates differ, due to the fact that the covariates are dependent of each other. This we also observe by studying the covariance matrix. (Vise kovariansmatrisa her?) It means that as one of the covariates varies, it will affect the other covariates that it depends on.
+We observe that the parameter estimates differ, due to the fact that the covariates are dependent of each other. This we also observe by studying the covariance matrix. It means that as one of the covariates varies, it will affect the other covariates that it depends on.

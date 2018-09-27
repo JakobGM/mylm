@@ -32,6 +32,8 @@ plot(model4a)
 
 In the plot of the residuals a clear trend is visible. From low fitted values the residuals are small, while they increase with larger fitted values. In addition, it seems that the residuals are somewhat asymmetric, with larger positive values than negative. This further support the claim that the model fit is not particularly good, as these observations do not coincide with the assumptions made regarding the distribution of $\varepsilon$.
 
+#### Improvements
+A suggested improvement to this model is to not use education as a quadratic parameter, but rather use it as a linear one. Using education as a linear parameter has shown success in earlier model attempts above, and there is no clear quadratic trend to observe in the wage-education distribution shown in part 1.
 
 ### Model 2: `age`, `language` and interaction term
 
@@ -54,6 +56,9 @@ plot(model4b)
 The plot of the residuals exhibit a similar trend as the previous model, namely that the residuals increase with larger fitted values. In addition, it also seems in this case as if the residuals are asymmetric, the positive residuals are considerably larger in absolute value than the negative.
 The residuals plot should, if the model assumptions are in fact correct, be normally distributed around the $x$-axis.
 One can with some confidence say that this is not the case for this model, as the residuals exhibits some non-random behaviour.
+
+#### Improvements
+Language doesn't seem to be significant and hasn't been significant in previous models either. So we suggest removing language altogether and replacing it with for example education.
 
 
 ### Model 3: `education` without intercept

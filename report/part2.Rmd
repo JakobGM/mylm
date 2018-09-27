@@ -111,7 +111,7 @@ model1$zvalues[2]^2
 
 
 ### e) Coefficient of Determination
-The coefficient of determination $R^2$ gives the proportion of variance in the data described by the model. We calculate it as mentioned above,
+The coefficient of determination $R^2$ gives the proportion of variance in the data explained by the model. We calculate it as mentioned above,
 
 $$
 R^2 = 1-\frac{SSE}{SST},
