@@ -92,10 +92,11 @@ print.mylm <- function(object, ...){
   cat('Call: \n')
   print(object$call)
   cat('\nCoefficients: \n')
-  temp <- matrix(c(object$coefficients[1], object$coefficients[2]), nrow=1, ncol=2)
-  print_m <- data.frame(temp)
-  colnames(print_m) <- c('(Intercept)', 'education')
-  print_m
+  temp_matrix <- matrix(object$coefficients)
+  coeff_matrix <- data.frame(t(temp_matrix))
+  colnames(coeff_matrix) <- rownames(object$coefficients)
+  rownames(coeff_matrix) <- " "
+  print(coeff_matrix)
 }
 
 summary.mylm <- function(object, ...){
