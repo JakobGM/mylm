@@ -78,6 +78,6 @@ Now onto the assumptions we must make regarding this classical linear model.
 
 In addition, if we want a classical *normal* linear regression model, we must assume:
 
-4) $\varepsilon ~ \text{N}_n(\bf 0, \sigma^2 \bf{I})$
+4) $\varepsilon \sim \text{N}_n(\bf 0, \sigma^2 \bf{I})$
 
 > The error terms must be *normally* distributed, in addition to the earlier assumptions.
