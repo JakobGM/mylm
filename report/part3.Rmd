@@ -23,4 +23,4 @@ model3 = mylm(wages~age, data = SLID)
 model3
 ```
 
-We observe that the parameter estimates differ, due to the fact that the covariates are dependent of each other.
+We observe that the parameter estimates differ, due to the fact that the covariates are dependent of each other. This we also observe by studying the covariance matrix. (Vise kovariansmatrisa her?) It means that as one of the covariates varies, it will affect the other covariates that it depends on.
