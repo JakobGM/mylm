@@ -8,7 +8,7 @@ SLID <- SLID[complete.cases(SLID),]
 
 In the following section the `mylm` function will be employed to three different model suggestions. To evaluate the fit of these models we'll print the summary of the models to discuss the p-values of the parameters, as well as the residual plot to see if there are any clear trends in the residuals, or discrepancies from the normal assumption.
 
-\subsection*{Model 1: `sex`, `age`, `language` and `education^2`}
+### Model 1: `sex`, `age`, `language` and `education^2`
 
 ```{r}
 model4a <- mylm(formula = wages ~ sex + age + language + I(education^2), data=SLID)
@@ -26,7 +26,7 @@ plot(model4a)
 In the plot of the residuals a clear trend is visible. From low fitted values the residuals are small, while they increase with larger fitted values. In addition, it seems that the residuals are somewhat asymmetric, with larger positive values than negative. This further support the claim that the model fit is not particularly good.
 
 
-\subsection*{Model 2: `age`, `language` and interaction term}
+### Model 2: `age`, `language` and interaction term
 
 ```{r}
 model4b <- mylm(formula = wages ~ language*age, data=SLID)
@@ -41,7 +41,7 @@ plot(model4b)
 The plot of the residuals exhibit a similar trend as the previous model, namely that the residuals increase with larger fitted values. In addition, it also seems in this case as if the residuals are asymmetric, the positive residuals are considerably larger in absolute value than the negative. The residuals plot should, if the model was correct, be completely random. One can with some confidence say that this is not the case for this model.
 
 
-\subsection*{Model 3: `education` without intercation term}
+### Model 3: `education` without interaction term
 
 ```{r}
 model4c <- mylm(formula = wages ~ -1 + education, data=SLID)
