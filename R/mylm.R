@@ -93,9 +93,9 @@ print.mylm <- function(object, ...){
   print(object$call)
   cat('\nCoefficients: \n')
   temp_matrix <- matrix(object$coefficients)
-  coeff_matrix <- data.frame(temp_matrix)
-  rownames(coeff_matrix) <- rownames(object$coefficients)
-  colnames(coeff_matrix) <- " "
+  coeff_matrix <- data.frame(t(temp_matrix))
+  colnames(coeff_matrix) <- rownames(object$coefficients)
+  rownames(coeff_matrix) <- " "
   print(coeff_matrix)
 }
 
