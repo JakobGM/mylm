@@ -56,15 +56,28 @@ The residuals plot should, if the model assumptions are in fact correct, be norm
 One can with some confidence say that this is not the case for this model, as the residuals exhibits some non-random behaviour.
 
 
-### Model 3: `education` without interaction term
+### Model 3: `education` without intercept
+
+Now we fit a new model with `education` as covariate and *without* an intercept.
 
 ```{r}
 model4c <- mylm(formula = wages ~ -1 + education, data=SLID)
 summary(model4c)
 ```
-First thing to notice from this model is that, as there is now interaction term, the only coefficient, `education`, is highly significant. The statistics does not make sense in this case, as can be discarded. In all the previous models the interaction term has been significantly different from 0, indicating that it should be included - there is no indication it should be dropped.
+
+First thing to notice from this model is that, as there is now interaction term, the only coefficient, `education`, is highly significant.
+The statistics does not make sense in this case, and can therefore be discarded.
+In all the previous models the interaction term has been significantly different from 0, indicating that it should be included - there is no indication it should be dropped.
+
+#### Residual analysis
 
 ```{r}
 plot(model4c)
 ```
-The residual plot seem to have a decreasing trend with the fitted values, as all residuals are larger than zero fro small fitted values, while the majority seem to be negative for larger fitted values. This residual plot does also exhibit asymmetric behaviour, similar to the previous models.
+
+The residual plot seem to have a decreasing trend with the fitted values, as all residuals are larger than zero fro small fitted values, while the majority seem to be negative for larger fitted values.
+This residual plot does also exhibit asymmetric behaviour, similar to the previous models.
+
+#### Improvement
+
+An improvement to this model could be to include an intercept, for the reasons mentioned above.
