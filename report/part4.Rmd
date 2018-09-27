@@ -24,7 +24,7 @@ Further, the p-values for `sex`, `age` and `education^2` indicate that all these
 
 Finally, note that the effect from `education` is aggregated, as the effect of wages from an increase in `education` will be quadratic rather than linear. There is no clear indication why this type of response is better than a linear response.
 
-Now we plot the residuals of this model:
+#### Residual analysis
 
 ```{r}
 plot(model4a)
@@ -35,17 +35,25 @@ In the plot of the residuals a clear trend is visible. From low fitted values th
 
 ### Model 2: `age`, `language` and interaction term
 
+Now we model the effect of `language` and `age` on `wage`, including interaction effects.
+
 ```{r}
 model4b <- mylm(formula = wages ~ language*age, data=SLID)
 summary(model4b)
 ```
-The first thing to notice from the summary print of the second model is that the only two parameters that are \textit{clearly} significant is the intercept term and the effect from `age`. The `language` terms, as well as the interaction effect, is not clearly significant, although the effect of `languageFrench` and `age:languageFrench` would be included on a significance level of 5%. 
 
+The first thing to notice from the summary of the second model, is that the only two parameters that are *clearly* significant is the intercept term and the effect from `age`.
+The `language` terms, as well as the interaction effect, are not clearly significant, although the effect of `languageFrench` and `age:languageFrench` would be included with a significance level of 5%. 
+
+#### Residual analysis
 
 ```{r}
 plot(model4b)
 ```
-The plot of the residuals exhibit a similar trend as the previous model, namely that the residuals increase with larger fitted values. In addition, it also seems in this case as if the residuals are asymmetric, the positive residuals are considerably larger in absolute value than the negative. The residuals plot should, if the model was correct, be completely random. One can with some confidence say that this is not the case for this model.
+
+The plot of the residuals exhibit a similar trend as the previous model, namely that the residuals increase with larger fitted values. In addition, it also seems in this case as if the residuals are asymmetric, the positive residuals are considerably larger in absolute value than the negative.
+The residuals plot should, if the model assumptions are in fact correct, be normally distributed around the $x$-axis.
+One can with some confidence say that this is not the case for this model, as the residuals exhibits some non-random behaviour.
 
 
 ### Model 3: `education` without interaction term
