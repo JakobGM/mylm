@@ -38,4 +38,4 @@ model3
 
 We observe that the parameter estimates differ, due to the fact that the covariates are dependent of each other. This we also observe by studying the covariance matrix for the estimated coefficients in the model with both `age` and `education`, where the elements off the diagonal are non-zero. It means that as one of the covariates varies, it will affect the other covariates that it depends on.
 
-On the other hand, if the covariates were completley independent, then the coefficients would remain the same, even if another covariate was added or removed. This is not the case here, which is quite intuitive considering that as one grows older one would typically have more education. 
+On the other hand, if the covariates were completley independent, then the coefficients would remain the same, even if another covariate was added or removed. This is not the case here, which is quite intuitive considering that as one grows older one would typically have more education - and the other way around.
