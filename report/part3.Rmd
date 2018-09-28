@@ -25,20 +25,20 @@ summary(model2)
 
 The estimated parameters for the multiple linear regression case are calculated as described in part 1. For the model with `education` and `age` as predictors for the response `wage`, the estimates for the coefficients are given in the summary above. They are `r model2$coefficients[2]` and `r model2$coefficients[3]` for `education` and `age` respectively. 
 
-With a similar approach as described in part 2, we calculate the observed $z$-statistic for each of the coefficients under the null hypothesis that the true parameter values are 0. The test statistics can be found in the summary, and the p-values for both the coefficients, and the intercept, are highly significant. Hence we can with some confidence say that both `education` and `age` have some predictive power with respect to the `wage`.  
+With a similar approach as described in part 2, we calculate the observed $z$-statistic for each of the coefficients under the null hypothesis that the true parameter values are 0. The test statistics can be found in the summary, and the p-values for both the coefficients, and the intercept, are highly significant. Hence, we can with some confidence say that both `education` and `age` have some predictive power with respect to the `wage`.
 
-The interpretation of the parameters are simply that as one of the covariates increase by one unit, the expected wage increase by the value of the coefficient. This means that as a person grows one year older, he is expected to increase his income by `r model2$coefficients[3]`. Similarly, as a person takes one year with education she is expected to grow her income by `r model2$coefficients[2]`.
+The interpretation of the parameters are simply that as one of the covariates increase by one unit, the expected wage increase by the value of the coefficient. This means that as a person grows one year older, he/she is expected to increase his/her income by `r model2$coefficients[3]`. Similarly, as a person takes one year with education he/she is expected to grow his/her income by `r model2$coefficients[2]`.
 
 
 ### c) Effect of Education and Age on Wages
 
-In order to investigate the effect on `age` and `education` both separately and together, we fit three models - one with only `age`, one with only `education` and one with both.  We begin by looking at the estimated coefficients in all three models again.
+In order to investigate the effect on `age` and `education` both separately, and together, we fit three models - one with only `age`, one with only `education` and one with both.  We begin by looking at the estimated coefficients in all three models again.
 
 ```{r}
-model1
-model2
+print(model1)
+print(model2)
 model3 = mylm(wages~age, data = SLID)
-model3
+print(model3)
 ```
 
 We observe that the parameter estimates differ, due to the fact that the covariates are dependent of each other. This we also observe by studying the covariance matrix for the estimated coefficients in the model with both `age` and `education`, where the elements off the diagonal are non-zero. It means that as one of the covariates varies, it will affect the other covariates that it depends on.
