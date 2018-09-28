@@ -58,7 +58,7 @@ Let's explain the notation:
 - We have $n$ observations and $k$ covariates.
 - Denote $p := k + 1$, as we will include an intercept parameter.
 - $\bf Y$ is a $n \times 1$ column vector containing respective response values for each observation.
-- $\bf X$ is a $n \times p$ matrix, containing induvidual observations on each row, and respective covariates on each column. The first column contains solely `1`s, as this is the intercept "covariate".
+- $\bf X$ is a $n \times p$ matrix, containing individual observations on each row, and respective covariates on each column. The first column contains solely `1`s, as this is the intercept "covariate".
 - $\bf \beta$ is $p \times 1$ column vector containing model coefficient parameters $[\beta_0, \beta_1, ..., \beta_k]^T$.
 - $\varepsilon$ is the error term, being a $n \times 1$ column vector.
 
