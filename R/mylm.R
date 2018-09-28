@@ -1,4 +1,4 @@
-
+## ---- mylm
 
 if(FALSE){ #Part3c
   model_age <- mylm(wages ~ age, data = SLID)

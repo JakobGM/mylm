@@ -31,9 +31,5 @@ opts_chunk$set(tidy.opts = list(width.cutoff = 68), tidy = TRUE, warning = FALSE
 ```{r child = 'part4.Rmd'}
 ```
 
-
-
-
-
-
-
+```{r child = 'source_code.Rmd'}
+```
