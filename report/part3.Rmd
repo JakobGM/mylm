@@ -8,18 +8,21 @@ SLID <- SLID[complete.cases(SLID),]
 
 
 ### a) Multiple Linear Regression
+
 The theory mentioned earlier has already been provided in vector notation, and thus applies to both simple and multiple linear regression. Here we show the functions applied on a model with multiple covariates.
+
 ```{r}
 model1 <- mylm(wages ~ education, data = SLID)
 model2 <- mylm(wages ~ education + age, data = SLID)
 print(model2)
 ```
 
-
 ### b) Model Analysis
+
 ```{r}
 summary(model2)
 ```
+
 The estimated parameters for the multiple linear regression case are calculated as described in part 1. For the model with `education` and `age` as predictors for the response `wage`, the estimates for the coefficients are given in the summary above. They are `r model2$coefficients[2]` and `r model2$coefficients[3]` for `education` and `age` respectively. 
 
 With a similar approach as discribed in part 2, we calculate the observed $z$-statistic for each of the coefficients under the null hypothesis that the true parameter values are 0. The test statistics can be found in the summary, and the p-values for both the coefficients, and the intercept, are highly significant. Hence we can with some confidence say that both `education` and `age` have some predictive power with respect to the `wage`.  
@@ -28,7 +31,9 @@ The interpretation of the parameters are simply that as one of the covariates in
 
 
 ### c) Effect of Education and Age on Wages
+
 In order to investigate the effect on `age` and `education` both separately and together, we fit three models - one with only `age`, one with only `education` and one with both.  We begin by looking at the estimated coefficients in all three models again.
+
 ```{r}
 model1
 model2
