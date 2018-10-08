@@ -1,0 +1,14 @@
+# Source code
+
+The source code of the `mylm` package can be found in `R/mylm.R`.
+The source code repository can be found at [github.com/jakobgm/mylm](https://github.com/jakobgm/mylm).
+
+Here is the main content of the source code:
+
+```{r echo = TRUE}
+read_chunk('../../R/mylm.R')
+```
+
+```{r eval = FALSE}
+<<mylm>>
+```

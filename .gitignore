@@ -1,5 +1,15 @@
 packrat/lib*/
 .Rproj.user
 packrat/src/
-reports/**/*
-!reports/**/*.Rmd
+
+# Report 1
+reports/report1/*
+!reports/report1/*.Rmd
+
+# Report 2
+reports/report2/*
+!reports/report2/*.Rmd
+
+# Report 3
+reports/report3/*
+!reports/report3/*.Rmd
