@@ -5,7 +5,7 @@ library(ggplot2)
 ```
 
 # Part 1: 
-In this exercise we will use binary regression with a logit link to model the probability of successfully climbing a mountain given it's height and prominence as covariates. We assume the number of people who successfully climbes mountain $i$ $Y_i$, is binomial distrubuted, $Y_i \sim$ Bin$(n_i, \pi_i)$, where $n_i$ is the number of poeple attempting to climb the mountain, and $\pi_i$ is the probability for success. That is, a model on the form,
+In this exercise we will use binary regression with a logit link to model the probability of successfully climbing a mountain given it's height and prominence as covariates. We assume the number of people who successfully climbs mountain $i$ $Y_i$, is binomial distributed, $Y_i \sim$ Bin$(n_i, \pi_i)$, where $n_i$ is the number of people attempting to climb the mountain, and $\pi_i$ is the probability for success. That is, a model on the form,
 1. Model for response: $Y_i \sim \text{Bin}(n_i, \pi_i) \quad \text{for} \  i = 1,\ldots,113$
 2. Linear predictor: $\eta_i = \mathbf{x}_i^T\boldsymbol{\beta}$
 3. Link function: $\eta_i = \ln \left(\frac{\pi_i}{1-\pi_i}\right)$
@@ -22,15 +22,15 @@ l(\beta) = \log L(\beta) = \sum_{i=1}^n \left( \log \binom{n_i}{y_i} + y_i \log(
 = \sum_{i=1}^n \left( \log \binom{n_i}{y_i} + y_i \log\left(\frac{\exp(\beta x_i^T)}{1+\exp(\beta x_i^T)}\right) + (n_i - y_i) \log\left(\frac{1}{1+exp(\beta x_i^T)} \right)  \right). 
 $$
 
-To arrive at the maximum likelihood estimators for $\beta$, one would find the maximum of the log-likelihood by numerical optimazation. In practice that would mean to find the score funtion, $S(\beta)$, by differentiating $l(\beta)$, and solve
+To arrive at the maximum likelihood estimators for $\beta$, one would find the maximum of the log-likelihood by numerical optimization. In practice that would mean to find the score function, $S(\beta)$, by differentiating $l(\beta)$, and solve
 $$
 S(\beta) = \frac{\partial l(\beta)}{\partial \beta} = 0.
 $$
-This is solved by Newton-Raphson or Fisher Scoring algorithm, which for an exponential distribution with the canonical link (like this model) are the same. It is an interative method on the form
+This is solved by Newton-Raphson or Fisher Scoring algorithm, which for an exponential distribution with the canonical link (like this model) are the same. It is an iterative method on the form
 $$
 \beta^{(t+1)} = \beta^{(t)} + H(\beta^{(t)})^{-1} S(\beta^{(t)}), 
 $$
-where $S$ is the score function, and $H$ is the Hessian matrix. The hessian is found either by differentiating the score function and taking the expectation, or calculating the covariance matrix of $S$,
+where $S$ is the score function, and $H$ is the Hessian matrix. The Hessian is found either by differentiating the score function and taking the expectation, or calculating the covariance matrix of $S$,
 $$
 H(\beta) = E \left(-  \frac{\partial l(\beta)}{\partial \beta \  \partial \beta^T}\right) = Cov(S(\beta)).
 $$
@@ -84,11 +84,11 @@ pvalue_coeff1
 pvalue_coeff2
 pvalue_coeff3
 ```
-We see that all the coefficients have a small p-value, and we would conclude that all the parameters are significant with any reasonable significance level. 
+We see that all the coefficients have a small `p`-value, and we would conclude that all the parameters are significant with any reasonable significance level. 
 
 
 ### Confidence interval for the parameters
-Using the fact that the parameters are asympotically normally distributed we can construct an 95\% confidence interval by
+Using the fact that the parameters are asymptotically normally distributed we can construct an 95\% confidence interval by
 $$
 [\hat{\beta}_i - z_{0.025} SD(\hat{\beta}_i), \hat{\beta}_i + z_{0.025} SD(\hat{\beta}_i)],
 $$
@@ -121,7 +121,7 @@ We have that the deviance is given by
 $$
 D = -2 (l(\hat{\beta}) - l(\tilde{\beta})) = -2 (l(\hat{\pi}) - l(\tilde{\pi})), 
 $$
-where $\tilde{\pi}$ denote the probability for the saturated model. This probability is simply $\tilde{\pi}_i = y_i / n_i$, such that the estimated number of succsesses is equal to the actual number for each mountain. The deviance for mountain $i$ is 
+where $\tilde{\pi}$ denote the probability for the saturated model. This probability is simply $\tilde{\pi}_i = y_i / n_i$, such that the estimated number of successes is equal to the actual number for each mountain. The deviance for mountain $i$ is 
 $$
 D_i = sign(y_i - \hat{y}_i) \cdot -2 (l(\hat{\pi}_i) - l(\tilde{\pi}_i)) = sign(y_i - \hat{\pi}_i n_i) \cdot -2 ( n_i (\log(\hat{\pi}_i) -\log(y_i /n_i) + (n_i -y_i) (\log (1-\hat{\pi}_i) - \log(1-(\frac{y_i}{n_i}))) ). 
 $$
@@ -151,12 +151,12 @@ Plotting the deviance for each mountain against the covariates height and promin
 ggplot(data = gg_frame, aes(x = height, y=deviance)) + geom_point() + geom_hline(yintercept=0, linetype="dotted", colour="red")
 ggplot(data = gg_frame, aes(x = prominence, y=deviance)) + geom_point() + geom_hline(yintercept=0, linetype="dotted", colour="red")
 ```
-It seems that the residuals are reasonably randomly distributed around 0 for both "low" mountains and high mountains. However, it seems that the model underestimates the probability of sucssess for the lowest mountains quite a lot, as there are some very large residuals for the lowest mountains. The residuals for the somewhat larger mountains seems to in general be closer to zero.  As a consequence of the "easy" mountains, it seems that the model often overestimates the probability of success for the more "average" mountains, as there seems to in general be more negative residuals than positive.
+It seems that the residuals are reasonably randomly distributed around 0 for both "low" mountains and high mountains. However, it seems that the model underestimates the probability of successes for the lowest mountains quite a lot, as there are some very large residuals for the lowest mountains. The residuals for the somewhat larger mountains seems to in general be closer to zero.  As a consequence of the "easy" mountains, it seems that the model often overestimates the probability of success for the more "average" mountains, as there seems to in general be more negative residuals than positive.
 
-For the prominence we see pretty much the same pattern as for the height. The residuals seem to be reasonably randomly distributed around zero, expect for a few outliers for small prominence. It seems that the model also underestimates the prbability of success in this case. For larger prominence the residuals are in general smaller. As with the previous plot it seems to in general be more negative residuals than positive.
+For the prominence we see pretty much the same pattern as for the height. The residuals seem to be reasonably randomly distributed around zero, expect for a few outliers for small prominence. It seems that the model also underestimates the probability of success in this case. For larger prominence the residuals are in general smaller. As with the previous plot it seems to in general be more negative residuals than positive.
 
 ### Estimated probabilities as function of the covariates
-We proceed by plotting the estimated probability as a function of the covarites height and prominence. We have that
+We proceed by plotting the estimated probability as a function of the covariates height and prominence. We have that
 $$
 \hat{\pi}_i = \frac{\exp(\hat\beta x_i^T)}{1 + \exp(\hat\beta x_i^T)}.
 $$
@@ -174,13 +174,13 @@ gg_frame$prob[i] <- exp(nu_temp)/(1+exp(nu_temp))
 }
 ggplot(gg_frame, aes(height, prominence, z=prob, fill = prob)) + geom_raster() + scale_fill_gradientn(colours = terrain.colors(10)) #+ geom_contour()
 ```
-We see that the probability for succsess is close to 1 for a low mountain with low prominence, while the probability is smaller for a high mountain with a high prominence. The probability decreases faster with increasing height than with increasing prominence, but is clearly decreasing in both. 
+We see that the probability for success is close to 1 for a low mountain with low prominence, while the probability is smaller for a high mountain with a high prominence. The probability decreases faster with increasing height than with increasing prominence, but is clearly decreasing in both. 
 
 
 ## (d) Prediction of success probability for Everest and Chogolisa
 
 ### Mount Everest
-We have that $x_{everest, height} = 8848$ and $x_{everest, prominence} = 8848$. We calculate the corresponding probability of success by the formula above. For the confidence interval we use a similar approach as for the coefficients, using the fact that the coefficients are asymptotically normal, meaning that the linear predictor is asympotically normal
+We have that $x_{everest, height} = 8848$ and $x_{everest, prominence} = 8848$. We calculate the corresponding probability of success by the formula above. For the confidence interval we use a similar approach as for the coefficients, using the fact that the coefficients are asymptotically normal, meaning that the linear predictor is asymptotically normal
 $$
 \hat\eta_e = \hat \beta x_e^T =  \hat\beta_0 +  x_{e,height} \hat\beta_{height} + x_{e,prominence} \hat\beta_{prominence} \\
 \implies \quad \hat\eta_e \sim N(\mu_{\eta_e} = \beta x_e^T, \sigma_{\eta_e}^2 = x_e Cov(\mathbf{\beta}) x_e^T).
@@ -209,7 +209,7 @@ max(mount$height)
 mean(mount$height)
 max(mount$prominence) 
 ```
-We see that the estimated probability of successfully climibing mount Everest is quite low, around 9\%. The 95\% confidence interval is rather large, from just over 5\% to 14\%. We note that Mount Everest is rather extreme compared to the other mountains in the data set, being approx. 400 meters higher than the heighest in the data set (more than 1000 above the average), and almost twice as large prominence as the largest in the data set (almost 6 times the average prominence). This means the model does not necessarily describe Mount Everest as good as the other mountains. 
+We see that the estimated probability of successfully climbing mount Everest is quite low, around 9\%. The 95\% confidence interval is rather large, from just over 5\% to 14\%. We note that Mount Everest is rather extreme compared to the other mountains in the data set, being approx. 400 meters higher than the highest in the data set (more than 1000 above the average), and almost twice as large prominence as the largest in the data set (almost 6 times the average prominence). This means the model does not necessarily describe Mount Everest as good as the other mountains. 
 
 
 ### Chogolisa
@@ -227,4 +227,4 @@ confint_pi_chogolisa <- exp(confint_nu_chogolisa)/(1 + exp(confint_nu_chogolisa)
 y_chogolisa_hat <- pi_chogolisa*22
 confint_y_chogolisa_hat <- confint_pi_chogolisa*22
 ```
-We see that the estimated number of people successfully climbing the mountain is somewhat smaller than the true number. This is consistent with our observation that the model have a tendency to underestimate the probability for mountains with small prominence, whih is the case here. 
+We see that the estimated number of people successfully climbing the mountain is somewhat smaller than the true number. This is consistent with our observation that the model have a tendency to underestimate the probability for mountains with small prominence, which is the case here. 
