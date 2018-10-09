@@ -4,97 +4,6 @@
 library(ggplot2)
 ```
 
-```{r, eval = TRUE}
-filepath <- "https://www.math.ntnu.no/emner/TMA4315/2018h/mountains"
-mount <- read.table(file = filepath, header = TRUE, col.names = c("height", "prominence", "fail", "success"))
-library("ggplot2")
-
-
-#Part1-b
-model <- glm(cbind(success, fail) ~ height + prominence, data = mount, family = "binomial")
-summary(model)
-
-exp(model$coefficients[2]) #coeff negative, so exp(coeff) less than 0, meaning the odds decrease. Less chance of sucessfully climb mountain the higher it is
-exp(model$coefficients[3]) #Same as above
-
-#Test significance with Wald test
-standard_error <- sqrt(diag(vcov(model)))
-pvalue_coeff1 <- 2*pnorm( (model$coefficients[1] - 0) / standard_error[1]) #significant
-pvalue_coeff2 <- 2*pnorm( (model$coefficients[2] - 0) / standard_error[2]) #significant
-pvalue_coeff3 <- 2*pnorm( (model$coefficients[3] - 0) / standard_error[3]) #significant
-
-confint_coeff1 <- c(model$coefficient[1] - qnorm(0.975)*standard_error[1], model$coefficient[1] + qnorm(0.975)*standard_error[1])
-confint_coeff2 <- c(model$coefficient[2] - qnorm(0.975)*standard_error[2], model$coefficient[2] + qnorm(0.975)*standard_error[2])
-confint_coeff3 <- c(model$coefficient[3] - qnorm(0.975)*standard_error[3], model$coefficient[3] + qnorm(0.975)*standard_error[3])
-
-exp_confint_coeff2 <- exp(confint_coeff2) #less than 1 with prob 95%, probably negative effect on odds
-exp_confint_coeff3 <- exp(confint_coeff3) #Same, but very close to 1. However, only in unit one meter so effect intuitvley not so large
-
-#Part1-c
-deviance <- function(n, y, pi_hat){
-  ret <- vector("numeric", length(n))
-  for (i in 1:length(n)){
-    log_hat <- y[i]*log(pi_hat[i]) + (n[i]-y[i])*log(1-pi_hat[i])
-    if(n[i] == y[i]){
-      log_tilde <- 0
-    } else {
-      log_tilde <- y[i]*log((y[i]/n[i])) + (n[i]-y[i])*log(1-(y[i]/n[i]))
-    }
-    ret[i] <- 2*(log_hat-log_tilde)
-  }
-  return(ret)
-}
-nu <- as.numeric(rep(model$coefficients[1], length(mount$height)) + model$coefficients[2]*mount$height + model$coefficients[3]*mount$prominence)
-pi_hat <- exp(nu)/(1+exp(nu))
-
-deviance_vector <- sign(mount$success - pi_hat*(mount$fail+mount$success))*deviance((mount$success + mount$fail), mount$success, pi_hat)
-
-
-
-gg_frame <- data.frame(height <- mount$height, prominence <- mount$prominence, deviance <- deviance_vector)
-ggplot(data = gg_frame, aes(x = height, y=deviance)) + geom_point() + geom_hline(yintercept=0, linetype="dotted", colour="red")
-ggplot(data = gg_frame, aes(x = prominence, y=deviance)) + geom_point() + geom_hline(yintercept=0, linetype="dotted", colour="red")
-
-N=100
-height_vector <- seq(min(mount$height), max(mount$height), length.out = N)
-prominence_vector <- seq(min(mount$prominence), max(mount$prominence), length.out = N)
-
-gg_frame <- expand.grid(height=height_vector, prominence=prominence_vector)
-gg_frame$prob <- vector("numeric", length(gg_frame$height))
-for(i in 1:length(gg_frame$height)){
-  nu_temp <- as.numeric(model$coefficients[1] + model$coefficients[2]*gg_frame$height[i] + model$coefficients[3]*gg_frame$prominence[i])
-  gg_frame$prob[i] <- exp(nu_temp)/(1+exp(nu_temp))
-}
-ggplot(gg_frame, aes(height, prominence, z=prob, fill = prob)) + geom_raster() + scale_fill_gradientn(colours = terrain.colors(10)) #+ geom_contour()
-
-
-
-#Part1-d
-height_everest <- 8848
-prominence_everest <- 8848
-nu_everest <- as.numeric(model$coefficients[1] + model$coefficients[2]*height_everest + model$coefficients[3]*prominence_everest)
-pi_everest <- exp(nu_everest)/(1+exp(nu_everest)) #9% prob of being successful
-max(mount$height) #everst ish 400 meters above max in data for model fitting
-max(mount$prominence) #almost twice as large as max in data. Therefore model is perhaps not as good, as everest is so different from data used to fit model
-
-sd_nu_everest <- sqrt(t(c(1, height_everest, prominence_everest)) %*% vcov(model) %*% c(1, height_everest, prominence_everest))
-confint_nu_everest <- c(nu_everest - qnorm(0.975)*sd_nu_everest, nu_everest+ qnorm(0.975)*sd_nu_everest)
-confint_pi_everest <- exp(confint_nu_everest)/(1 + exp(confint_nu_everest)) #quite large, but main reasons described above
-
-
-height_chogolisa <- 7665
-prominence_chogolisa <- 1624
-nu_chogolisa <- as.numeric(model$coefficients[1] + model$coefficients[2]*height_chogolisa + model$coefficients[3]*prominence_chogolisa)
-pi_chogolisa <- exp(nu_chogolisa)/(1+exp(nu_chogolisa)) #70% prob of being successful
-
-sd_nu_chogolisa <- sqrt(t(c(1, height_chogolisa, prominence_chogolisa)) %*% vcov(model) %*% c(1, height_chogolisa, prominence_chogolisa))
-confint_nu_chogolisa <- c(nu_chogolisa - qnorm(0.975)*sd_nu_chogolisa, nu_chogolisa+ qnorm(0.975)*sd_nu_chogolisa)
-confint_pi_chogolisa <- exp(confint_nu_chogolisa)/(1 + exp(confint_nu_chogolisa)) #between 63% and 76%
-y_chogolisa_hat <- pi_chogolisa*22
-confint_y_chogolisa_hat <- confint_pi_chogolisa*22 #actual 20 success, not in 95% confint. 
-```
-
-
 # Part 1: 
 In this exercise we will use binary regression with a logit link to model the probability of successfully climbing a mountain given it's height and prominence as covariates. We assume the number of people who successfully climbes mountain $i$ $Y_i$, is binomial distrubuted, $Y_i \sim$ Bin$(n_i, \pi_i)$, where $n_i$ is the number of poeple attempting to climb the mountain, and $\pi_i$ is the probability for success. That is, a model on the form,
 1. Model for response: $Y_i \sim \text{Bin}(n_i, \pi_i) \quad \text{for} \  i = 1,\ldots,113$
@@ -253,7 +162,7 @@ $$
 $$
 We calculate this value for a set of heights and prominences from the minimum value to the maximum value in the data set for both. We plot the corresponding estimated probabilities against the covariates.
 ```{r}
-N=500
+N=50
 height_vector <- seq(min(mount$height), max(mount$height), length.out = N)
 prominence_vector <- seq(min(mount$prominence), max(mount$prominence), length.out = N)
 
