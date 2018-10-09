@@ -1,0 +1,32 @@
+```{r, eval = TRUE, echo=FALSE}
+#Part 2
+filepath <- "https://www.math.ntnu.no/emner/TMA4315/2018h/eliteserien2018"
+tippeliga <- read.table(file = filepath, header = TRUE, colClasses = c("character",
+                                                                       "character", "numeric", "numeric"))
+
+
+#Part 2 - (a)
+goals_table <- table(tippeliga$yh, tippeliga$ya)
+chisq.test(goals_table) #0.90 not significant!
+
+#Part 2 - (b)
+
+tippeliga_table <- data.frame("team" = unique(tippeliga$home), "points"=vector("numeric", length(unique(tippeliga$home))), "goal_diff" <- vector("numeric", length(unique(tippeliga$home))))
+colnames(tippeliga_table) <- c("team", "points", "goal_diff")
+for(i in 1:length(tippeliga_table$team)){
+  tippeliga_table$points[i] <-( sum(3*( tippeliga$yh[tippeliga$home==tippeliga_table$team[i]] > tippeliga$ya[tippeliga$home==tippeliga_table$team[i]] )) 
+                                + sum(3*( tippeliga$ya[tippeliga$away==tippeliga_table$team[i]] > tippeliga$yh[tippeliga$away==tippeliga_table$team[i]] ))
+                                + sum(1*( tippeliga$ya[tippeliga$away==tippeliga_table$team[i]] == tippeliga$yh[tippeliga$away==tippeliga_table$team[i]] ))
+                                + sum(1*( tippeliga$yh[tippeliga$home==tippeliga_table$team[i]] == tippeliga$ya[tippeliga$home==tippeliga_table$team[i]] ))
+  )
+  
+  
+  tippeliga_table$goal_diff[i] <- (sum(tippeliga$yh[tippeliga$home==tippeliga_table$team[i]]) + sum(tippeliga$ya[tippeliga$away==tippeliga_table$team[i]]) 
+                                   - sum(tippeliga$ya[tippeliga$home==tippeliga_table$team[i]]) - sum(tippeliga$yh[tippeliga$away==tippeliga_table$team[i]])
+  )
+}
+
+tippeliga_table <- tippeliga_table[order(-tippeliga_table$points, -tippeliga_table$goal_diff),]
+rownames(tippeliga_table) <- 1:length(tippeliga_table$team)
+tippeliga_table
+```
