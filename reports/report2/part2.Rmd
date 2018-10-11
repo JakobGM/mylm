@@ -65,7 +65,7 @@ We now implement the actual Poisson regression to estimate the intercept, home a
 Our linear predictors are of the form
 
 $$
-\ln\text{E}(Y) = \ln\lambda = \beta_0+\beta_{\text{home}}x_{\text{home}}+\beta_{\text{BodoeGlimt}}x_{\text{BodoeGlimt}}+\dots+\beta_{\text{Vaalerenga}}x_{\text{Vaalerenga}}.
+\ln\text{E}(Y) = \beta_0+\beta_{\text{home}}x_{\text{home}}+\beta_{\text{BodoeGlimt}}x_{\text{BodoeGlimt}}+\dots+\beta_{\text{Vaalerenga}}x_{\text{Vaalerenga}}.
 $$
 Here, $x_{home}$ is equal to 1 if the score $Y$ is for the home team, and 0 if it is for the away team. If A is the home team and B is the away team, then if the score $Y$ is for team A, then $x_A = 1$, $x_B = -1$ and the covariates for all other teams are 0.
 
@@ -130,8 +130,89 @@ Based on these estimates we also make a ranking for all the teams:
 t(t(sort(tail(beta, n=16), decreasing=TRUE)))
 ```
 
+TODO: Compare to results in b).
+
 ## d) Simulation
+We now want to investigate the results of future matches using our estimated strengths.
+```{r}
+filepath <- "https://www.math.ntnu.no/emner/TMA4315/2018h/unplayed2018"
+unplayed <- read.table(file = filepath, header = TRUE, colClasses = c("character", "character"))
+
+X_up <- matrix(0, nrow <- 2*length(unplayed$home), ncol <- 18)
+X_up[,1] <- rep(1, 2*length(unplayed$home))
+colnames(X_up) <- c("Intercept", "HomeAdvantage", as.character(tippeliga_table$team))
+for(i in 1:length(unplayed$home)){
+  X_up[i,2] <- 1
+  X_up[i, colnames(X_up) == unplayed$home[i]] <- 1
+  X_up[i, colnames(X_up) == unplayed$away[i]] <- -1
+}
+
+for(i in 1:length(unplayed$home)){
+  X_up[i+length(unplayed$home),2] <- 0
+  X_up[i+length(unplayed$home), colnames(X_up) == unplayed$home[i]] <- -1
+  X_up[i+length(unplayed$home), colnames(X_up) == unplayed$away[i]] <- 1
+}
+
+lambda <- exp(X_up %*% beta)
+n_matches <- length(lambda)
+N=100 #simulations 
+#TODO: N=1000
+
+position_simulation <- matrix(0, nrow <- N, ncol <- 16)
+colnames(position_simulation) <- tippeliga_table$team
+rownames(position_simulation) <- 1:N
 
 
+for(j in 1:N){
+  tippeliga_table_sim <- tippeliga_table
+  unplayed$yh <- rpois(n_matches/2, lambda = head(lambda, n=(n_matches/2)))
+  unplayed$ya <- rpois(n_matches/2, lambda = tail(lambda, n=(n_matches/2)))
+  
+  
+  
+  for(i in 1:length(tippeliga_table_sim$team)){
+    tippeliga_table_sim$points[i] <- (tippeliga_table_sim$points[i] 
+                                      + sum(3*( unplayed$yh[unplayed$home==tippeliga_table_sim$team[i]] > unplayed$ya[unplayed$home==tippeliga_table_sim$team[i]] )) 
+                                      + sum(3*( unplayed$ya[unplayed$away==tippeliga_table_sim$team[i]] > unplayed$yh[unplayed$away==tippeliga_table_sim$team[i]] ))
+                                      + sum(1*( unplayed$ya[unplayed$away==tippeliga_table_sim$team[i]] == unplayed$yh[unplayed$away==tippeliga_table_sim$team[i]] ))
+                                      + sum(1*( unplayed$yh[unplayed$home==tippeliga_table_sim$team[i]] == unplayed$ya[unplayed$home==tippeliga_table_sim$team[i]] ))
+    )
+    
+    
+    tippeliga_table_sim$goal_diff[i] <- (tippeliga_table_sim$goal_diff[i]
+                                         + sum(unplayed$yh[unplayed$home==tippeliga_table_sim$team[i]]) + sum(unplayed$ya[unplayed$away==tippeliga_table_sim$team[i]]) 
+                                         - sum(unplayed$ya[unplayed$home==tippeliga_table_sim$team[i]]) - sum(unplayed$yh[unplayed$away==tippeliga_table_sim$team[i]])
+    )
+  }
+  
+  tippeliga_table_sim <- tippeliga_table_sim[order(-tippeliga_table_sim$points, -tippeliga_table_sim$goal_diff),]
+  rownames(tippeliga_table_sim) <- 1:length(tippeliga_table$team)
+  
+  for(k in 1:length(tippeliga_table_sim$team)){
+    position_simulation[j,tippeliga_table_sim[k,]$team==colnames(position_simulation)] <- k
+  }
+}
+
+table_sim <- colMeans(position_simulation)
+table_sim <- t(t(table_sim))
+colnames(table_sim) <- "Mean position"
+table_sim <- data.frame(table_sim)
+table_sim$old.position <- 1:16
+lowest <- vector("numeric", 16)
+highest <- vector("numeric", 16)
+for (i in 1:16){
+  lowest[i] <- max(position_simulation[,i])
+  highest[i] <- min(position_simulation[,i])
+}
+table_sim$highest.position <- highest
+table_sim$lowest.position <- lowest
+table_sim <- table_sim[order(table_sim$Mean.position), , drop = FALSE]
+table_sim$team <- rownames(table_sim)
+table_sim <- table_sim[,c(5,1,2,3,4)]
+rownames(table_sim) <- 1:16
+table_sim
+position_simulation <- melt(data.frame(position_simulation))
+ggplot(data = position_simulation) + geom_histogram(aes(position_simulation$value), binwidth=0.5) + facet_wrap(~ variable) + xlab("")
+```
 
 
