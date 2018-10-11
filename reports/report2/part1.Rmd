@@ -61,17 +61,17 @@ To interpret the coefficients we consider the odds, as
 
 $$
 \eta_i = \ln \left(\frac{\pi_i}{1-\pi_i}\right)\\
-\implies \quad \frac{\pi_i}{1-\pi_i} = \exp(\beta x_i^T) = \exp( \beta_0) \exp( x_{i,height} \beta_{height}) \exp(x_{i,prominence} \beta_{prominence})
+\implies \quad \frac{\pi_i}{1-\pi_i} = \exp(\beta x_i^T) = \exp( \beta_0) \exp( x_{i,\text{height}} \beta_{\text{height}}) \exp(x_{i,\text{prominence}} \beta_{\text{prominence}})
 $$
 
-So if $x_{i,height}$ changes to $x_{i,height}+1$ the odds change with a factor $\exp(\beta_{height})$ as 
+So if $x_{i,\text{height}}$ changes to $x_{i,\text{height}}+1$ the odds change with a factor $\exp(\beta_{\text{height}})$ as 
 
 $$
-odds_{new} = \exp( \beta_0) \exp( x_{i,height} \beta_{height}) \exp((x_{i,prominence}+1) \beta_{prominence}) \\
-= \exp( \beta_0) \exp( x_{i,height} \beta_{height}) \exp(x_{i,prominence} \beta_{prominence}) \exp(\beta_{height}) = odds_{old} \exp(\beta_{height}).
+\text{odds}_{new} = \exp( \beta_0) \exp( x_{i,\text{height}} \beta_{\text{height}}) \exp((x_{i,\text{prominence}}+1) \beta_{\text{prominence}}) \\
+= \exp( \beta_0) \exp( x_{i,\text{height}} \beta_{\text{height}}) \exp(x_{i,\text{prominence}} \beta_{\text{prominence}}) \exp(\beta_{\text{height}}) = \text{odds}_{old} \exp(\beta_{\text{height}}).
 $$
 
-Similarly if $x_{i,prominence}$ changes to $x_{i,prominence}+1$ the odds change with a factor $\exp(\beta_{prominence})$. Calculating these factors we get
+Similarly if $x_{i,\text{prominence}}$ changes to $x_{i,\text{prominence}}+1$ the odds change with a factor $\exp(\beta_{\text{prominence}})$. Calculating these factors we get
 
 ```{r}
 exp(model$coefficients[2])
@@ -152,7 +152,7 @@ $$
 where $\tilde{\pi}$ denote the probability for the saturated model. This probability is simply $\tilde{\pi}_i = y_i / n_i$, such that the estimated number of successes is equal to the actual number for each mountain. The deviance for mountain $i$ is 
 
 $$
-D_i = sign(y_i - \hat{y}_i) \cdot -2 (l(\hat{\pi}_i) - l(\tilde{\pi}_i)) = sign(y_i - \hat{\pi}_i n_i) \cdot -2 ( n_i (\log(\hat{\pi}_i) -\log(y_i /n_i) + (n_i -y_i) (\log (1-\hat{\pi}_i) - \log(1-(\frac{y_i}{n_i}))) ). 
+D_i = \text{sign}(y_i - \hat{y}_i) \cdot -2 (l(\hat{\pi}_i) - l(\tilde{\pi}_i)) = \text{sign}(y_i - \hat{\pi}_i n_i) \cdot -2 ( n_i (\log(\hat{\pi}_i) -\log(y_i /n_i) + (n_i -y_i) (\log (1-\hat{\pi}_i) - \log(1-(\frac{y_i}{n_i}))) ). 
 $$
 
 We calculate the deviance of each mountain with the build in R-function, and plot the deviance against height and prominence:
@@ -198,10 +198,10 @@ We see that the probability for success is close to 1 for a low mountain with lo
 
 ### Mount Everest
 
-We have that $x_{everest, height} = 8848$ and $x_{everest, prominence} = 8848$. We calculate the corresponding probability of success by the formula above. For the confidence interval we use a similar approach as for the coefficients, using the fact that the coefficients are asymptotically normal, meaning that the linear predictor is asymptotically normal
+We have that $x_{\text{everest, height}} = 8848$ and $x_{\text{everest, prominence}} = 8848$. We calculate the corresponding probability of success by the formula above. For the confidence interval we use a similar approach as for the coefficients, using the fact that the coefficients are asymptotically normal, meaning that the linear predictor is asymptotically normal
 
 $$
-\hat\eta_e = \hat \beta x_e^T =  \hat\beta_0 +  x_{e,height} \hat\beta_{height} + x_{e,prominence} \hat\beta_{prominence} \\
+\hat\eta_e = \hat \beta x_e^T =  \hat\beta_0 +  x_{e,\text{height}} \hat\beta_{\text{height}} + x_{e,\text{prominence}} \hat\beta_{\text{prominence}} \\
 \implies \quad \hat\eta_e \sim N(\mu_{\eta_e} = \beta x_e^T, \sigma_{\eta_e}^2 = x_e Cov(\mathbf{\beta}) x_e^T).
 $$
 
