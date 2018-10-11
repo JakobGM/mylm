@@ -1,16 +1,44 @@
+# Part 2: Poisson regression – Eliteserien 2018
+
 ```{r, eval = TRUE, echo=FALSE}
-#Part 2
 filepath <- "https://www.math.ntnu.no/emner/TMA4315/2018h/eliteserien2018"
 tippeliga <- read.table(file = filepath, header = TRUE, colClasses = c("character",
                                                                        "character", "numeric", "numeric"))
+```
 
+In this exercise we want to answer the following question for the 2018 Eliteserien: *How likely or unlikely are Rosenborg to become champions?*
+Our data consists of the results of all played football matches of the 2018 Eliteserien, with one row per match, containing the home-team: `tippeliga$home`, the away-team: `tippeliga$away`, and the number of goals scored by each team, `tippeliga$yh` and `tippeliga$ya`. Using this data, we assume that the score of the home team is independent of the away team and that each team has a single parameter measuring their strength. These strength parameters are denoted by $\beta$, such that $\beta_{Tromsoe}$ is the strength parameter of Tromsoe, $\beta_{Molde}$ is the strength parameter for Molde, etc. Then, for a match between two teams A and B where A is the home team, the score for team A will have a Poisson distribution with mean $\lambda$ where $\ln\lambda = \beta_0+\beta_{home}+\beta_A-\beta_B$, and team B's score will have a Poisson distribution with mean $\lambda$ where $\ln\lambda = \beta_0-\beta_A+\beta_B$. Here, $\beta_0$ is our intercept and $\beta_{home}$ is a home advantage parameter.
 
-#Part 2 - (a)
+## a) Testing independence between home and away team with contingency test
+We wish to test the assumption of independence between the goals made by the home and away team. For testing this independence, we use construct a *contingency table* and preform a *Pearson's* $\chi^2$ *test*. 
+
+We construct the contingency table by using the command `table(tippeliga$yh, tippeliga$ya)` in *R*.
+
+```{r}
 goals_table <- table(tippeliga$yh, tippeliga$ya)
-chisq.test(goals_table) #0.90 not significant!
+goals_table
+```
+The column names of this table denote the number of goals scored by the home team, while the row names denote the number of goals scored by the away team. Then the element (0,0) in the table denotes the number of games where both teams scored zero goals (eight games had this result), and the element (2,3) denotes the number of games where the away team scored 2 goals and the away team scored 3 goals (four games had this result), as examples. 
 
-#Part 2 - (b)
+Let $H_i$ be the event that the home team scores $i$ goals and similarly $A_j$ be the event that the away team scores $j$ goals, and let $p_i = P(H_i)$, $q_j = P(A_j)$ and $p_{ij} = P(H_i, A_j)$. Under our assumption that $H_i$ and $A_j$ are independent, $p_{ij} = p_i\cdot q_j$. So for each pair $(i,j)$, we compare $np_iq_i$ to the actual observed number of games with the combination $(i,j)$, which we denote $k_{ij}$. This is what is done in the Pearsons $\chi^2$ test. Our test statistic is the sum over all rows and columns of the table of $\frac{(k_{ij}-np_iq_i)}{np_{ij}}$. If this test statistic is larger that $\chi^2_{\alpha, (6-1)(6-1)}$, we reject $H_0$ at the $\alpha$ level of significance. These calculations could be done manually, or we can use the *R* function `chisq.test()`.
 
+```{r}
+chisq.test(goals_table)
+qchisq(0.1, 25)
+pchisq(16.387,25, lower.tail = FALSE)
+```
+```{r echo = FALSE}
+test = chisq.test(goals_table) #0.90 not significant!
+d = test$statistic
+X2 = qchisq(0.1, 25)
+p = pchisq(16.387,25, lower.tail = FALSE)
+```
+We see that our observed test statistic has a value of `r d`, while $\chi^2_{\alpha,25} = $ `r X2`, along with a p-value of `r p`, which means that the assumption that the score of the home team and the score of the away team are independent seems to be quite reasonable.
+
+## b) Team rankings
+After a match, the winning team gets 3 points and the loser gets 0, and if it is a draw both teams get 1 point each.
+We want to calculate the ranking for each team, as well as the goal differences.
+```{r, eval = TRUE, echo = TRUE}
 tippeliga_table <- data.frame("team" = unique(tippeliga$home), "points"=vector("numeric", length(unique(tippeliga$home))), "goal_diff" <- vector("numeric", length(unique(tippeliga$home))))
 colnames(tippeliga_table) <- c("team", "points", "goal_diff")
 for(i in 1:length(tippeliga_table$team)){
@@ -30,3 +58,80 @@ tippeliga_table <- tippeliga_table[order(-tippeliga_table$points, -tippeliga_tab
 rownames(tippeliga_table) <- 1:length(tippeliga_table$team)
 tippeliga_table
 ```
+
+## c) Preforming Poisson regression
+We now implement the actual Poisson regression to estimate the intercept, home advantage and strength parameter for each team.
+
+Our linear predictors are of the form
+
+$$
+\ln\text{E}(Y) = \ln\lambda = \beta_0+\beta_{\text{home}}x_{\text{home}}+\beta_{\text{BodoeGlimt}}x_{\text{BodoeGlimt}}+\dots+\beta_{\text{Vaalerenga}}x_{\text{Vaalerenga}}.
+$$
+Here, $x_{home}$ is equal to 1 if the score $Y$ is for the home team, and 0 if it is for the away team. If A is the home team and B is the away team, then if the score $Y$ is for team A, then $x_A = 1$, $x_B = -1$ and the covariates for all other teams are 0.
+
+We begin by constructing the design matrix $X$.
+```{r}
+# Design matrix
+# y = X beta
+X <- matrix(0, nrow <- 384, ncol <- 18)
+X[,1] <- rep(1, 384)
+colnames(X) <- c("Intercept", "HomeAdvantage", as.character(tippeliga_table$team))
+for(i in 1:length(tippeliga$home)){
+  X[i,2] <- 1
+  X[i, colnames(X) == tippeliga$home[i]] <- 1
+  X[i, colnames(X) == tippeliga$away[i]] <- -1
+}
+
+for(i in 1:length(tippeliga$home)){
+  X[i+length(tippeliga$home),2] <- 0
+  X[i+length(tippeliga$home), colnames(X) == tippeliga$home[i]] <- -1
+  X[i+length(tippeliga$home), colnames(X) == tippeliga$away[i]] <- 1
+}
+
+Y <- c(tippeliga$yh, tippeliga$ya)
+```
+
+Next we implement the loglikelihood function, in order to estimate the parameters. The likelihood function is
+$$
+L(\beta) = \prod_{i=1}^n\frac{\lambda_i^{y_i}}{y_i!}e^{-\lambda_i},
+$$
+yielding the loglikelihood
+$$
+l(\beta) = \sum_{i=1}^n[y_i\ln\lambda_i-\lambda_i-\ln(y_i!)],
+$$
+where $\lambda_i = e^{\eta_i} = e^{x_i^T\beta}$.
+
+```{r}
+loglik <- function(beta_optim, Y, X, beta_SF){
+  beta <- c(beta_optim, beta_SF)
+  sum <- 0
+  for(i in 1:length(Y)){
+    lambda_i <- exp(X[i,] %*% beta)
+    sum <- sum + Y[i]*log(lambda_i)-lambda_i-log(factorial(Y[i]))
+  }
+  return(-sum)
+}
+```
+
+By now using `optim()`in *R*, we obtain the estimates for the intercept, home advantage, and strength parameters for every team.
+```{r}
+optim_ret <- optim(par=(1:(dim(X)[2]-1)), loglik, X=X, Y=Y, beta_SF=1, method="BFGS")
+beta <- c(optim_ret$par, 1)
+names(beta) <- colnames(X)
+```
+
+All the parameter estimates are:
+```{r, echo = FALSE}
+beta
+```
+
+Based on these estimates we also make a ranking for all the teams:
+```{r}
+t(t(sort(tail(beta, n=16), decreasing=TRUE)))
+```
+
+## d) Simulation
+
+
+
+
