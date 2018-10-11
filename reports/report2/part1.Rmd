@@ -64,14 +64,14 @@ $$
 \implies \quad \frac{\pi_i}{1-\pi_i} = \exp(\beta x_i^T) = \exp( \beta_0) \exp( x_{i,height} \beta_{height}) \exp(x_{i,prominence} \beta_{prominence})
 $$
 
-So if $x_{i,height}$ changes to $x_{i,height}+1$ the odds change with a factor $\exp(beta_{height})$ as 
+So if $x_{i,height}$ changes to $x_{i,height}+1$ the odds change with a factor $\exp(\beta_{height})$ as 
 
 $$
 odds_{new} = \exp( \beta_0) \exp( x_{i,height} \beta_{height}) \exp((x_{i,prominence}+1) \beta_{prominence}) \\
 = \exp( \beta_0) \exp( x_{i,height} \beta_{height}) \exp(x_{i,prominence} \beta_{prominence}) \exp(\beta_{height}) = odds_{old} \exp(\beta_{height}).
 $$
 
-Similarly if $x_{i,prominence}$ changes to $x_{i,prominence}+1$ the odds change with a factor $\exp(beta_{prominence})$. Calculating these factors we get
+Similarly if $x_{i,prominence}$ changes to $x_{i,prominence}+1$ the odds change with a factor $\exp(\beta_{prominence})$. Calculating these factors we get
 
 ```{r}
 exp(model$coefficients[2])
@@ -94,9 +94,9 @@ We calculate the p-value for each of the parameters.
 
 ```{r}
 standard_error <- sqrt(diag(vcov(model)))
-pvalue_coeff1 <- 2*pnorm( (model$coefficients[1] - 0) / standard_error[1])
-pvalue_coeff2 <- 2*pnorm( (model$coefficients[2] - 0) / standard_error[2])
-pvalue_coeff3 <- 2*pnorm( (model$coefficients[3] - 0) / standard_error[3])
+pvalue_coeff1 <- 2*pnorm( abs((model$coefficients[1] - 0) / standard_error[1]), lower.tail = FALSE)
+pvalue_coeff2 <- 2*pnorm( abs((model$coefficients[2] - 0) / standard_error[2]), lower.tail = FALSE)
+pvalue_coeff3 <- 2*pnorm( abs((model$coefficients[3] - 0) / standard_error[3]), lower.tail = FALSE)
 pvalue_coeff1
 pvalue_coeff2
 pvalue_coeff3
@@ -123,7 +123,7 @@ confint_coeff2
 confint_coeff3
 ```
 
-We can see that the confidence interval for the coefficients $beta_{height}$ and $beta_{prominence}$ does not include numbers above 1, implying that we can with a confidence level of 95\% claim that the effect of both height and prominence have a negative effect of the odds.
+We can see that the confidence interval for the coefficients $\beta_{height}$ and $\beta_{prominence}$ does not include numbers above 1, implying that we can with a confidence level of 95\% claim that the effect of both height and prominence have a negative effect of the odds.
 
 ###Confidence interval for exponential transform
 
@@ -155,39 +155,17 @@ $$
 D_i = sign(y_i - \hat{y}_i) \cdot -2 (l(\hat{\pi}_i) - l(\tilde{\pi}_i)) = sign(y_i - \hat{\pi}_i n_i) \cdot -2 ( n_i (\log(\hat{\pi}_i) -\log(y_i /n_i) + (n_i -y_i) (\log (1-\hat{\pi}_i) - \log(1-(\frac{y_i}{n_i}))) ). 
 $$
 
-We calculate the deviance of each mountain in the following way
-
+We calculate the deviance of each mountain with the build in R-function, and plot the deviance against height and prominence:
 ```{r}
-deviance <- function(n, y, pi_hat){
-ret <- vector("numeric", length(n))
-for (i in 1:length(n)){
-log_hat <- y[i]*log(pi_hat[i]) + (n[i]-y[i])*log(1-pi_hat[i])
-if(n[i] == y[i]){
-log_tilde <- 0
-} else {
-log_tilde <- y[i]*log((y[i]/n[i])) + (n[i]-y[i])*log(1-(y[i]/n[i]))
-}
-ret[i] <- 2*(log_hat-log_tilde)
-}
-return(ret)
-}
-nu <- as.numeric(rep(model$coefficients[1], length(mount$height)) + model$coefficients[2]*mount$height + model$coefficients[3]*mount$prominence)
-pi_hat <- exp(nu)/(1+exp(nu))
-
-deviance_vector <- sign(mount$success - pi_hat*(mount$fail+mount$success))*deviance((mount$success + mount$fail), mount$success, pi_hat)
+deviance_vector <- residuals(model, type="deviance")
 gg_frame <- data.frame(height <- mount$height, prominence <- mount$prominence, deviance <- deviance_vector)
-```
-
-Plotting the deviance for each mountain against the covariates height and prominence, we get
-
-```{r}
 ggplot(data = gg_frame, aes(x = height, y=deviance)) + geom_point() + geom_hline(yintercept=0, linetype="dotted", colour="red")
 ggplot(data = gg_frame, aes(x = prominence, y=deviance)) + geom_point() + geom_hline(yintercept=0, linetype="dotted", colour="red")
 ```
 
-It seems that the residuals are reasonably randomly distributed around 0 for both "low" mountains and high mountains. However, it seems that the model underestimates the probability of successes for the lowest mountains quite a lot, as there are some very large residuals for the lowest mountains. The residuals for the somewhat larger mountains seems to in general be closer to zero.  As a consequence of the "easy" mountains, it seems that the model often overestimates the probability of success for the more "average" mountains, as there seems to in general be more negative residuals than positive.
+It seems that the residuals are reasonably randomly distributed around 0 for both "low" mountains and high mountains. However, it seems that the model underestimates the probability of successes for some of the lowest mountains, as there are some large residuals for these. The residuals for the somewhat larger mountains seems to in general be closer to zero.  As a consequence of the "easy" mountains, it seems that the model often overestimates the probability of success for the more "average" mountains, as there seems to in general be more negative residuals than positive.
 
-For the prominence we see pretty much the same pattern as for the height. The residuals seem to be reasonably randomly distributed around zero, expect for a few outliers for small prominence. It seems that the model also underestimates the probability of success in this case. For larger prominence the residuals are in general smaller. As with the previous plot it seems to in general be more negative residuals than positive.
+For the prominence we see pretty much the same pattern as for the height. The residuals seem to be reasonably randomly distributed around zero, expect for a few outliers for small prominence. It seems that the model also underestimates the probability of success in this case. For larger prominence the residuals are in general smaller. As with the previous plot it seems to in general be more extreme negative residuals than positive.
 
 ### Estimated probabilities as function of the covariates
 
@@ -261,7 +239,7 @@ We see that the estimated probability of successfully climbing mount Everest is 
 
 ### Chogolisa
 
-We have that $x_{everest, height} = 7665$ and $x_{everest, prominence} = 1624$. We calculate the estimated probability for success, and corresponding 95\% confidence interval, in the same way as for Mount Everest. In addition we calculate the estimated $y_{chogolisa}$ by $\hat y_{chogolisa} = \hat\pi_{chogolosa} n_{chogolisa}$, and the confidence interval.
+We have that $x_{chogolisa, height} = 7665$ and $x_{chogolisa, prominence} = 1624$. We calculate the estimated probability for success, and corresponding 95\% confidence interval, in the same way as for Mount Everest. In addition we calculate the estimated $y_{chogolisa}$ by $\hat y_{chogolisa} = \hat\pi_{chogolosa} n_{chogolisa}$, and the confidence interval.
 
 ```{r}
 height_chogolisa <- 7665
