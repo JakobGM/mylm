@@ -1,6 +1,8 @@
 # Part 2: Poisson regression – Eliteserien 2018
 
 ```{r, eval = TRUE, echo=FALSE}
+library(reshape)
+library(ggplot2)
 filepath <- "https://www.math.ntnu.no/emner/TMA4315/2018h/eliteserien2018"
 tippeliga <- read.table(file = filepath, header = TRUE, colClasses = c("character",
                                                                        "character", "numeric", "numeric"))
@@ -15,8 +17,12 @@ We wish to test the assumption of independence between the goals made by the hom
 We construct the contingency table by using the command `table(tippeliga$yh, tippeliga$ya)` in *R*.
 
 ```{r}
-goals_table <- table(tippeliga$yh, tippeliga$ya)
-goals_table
+temp_ya <- tippeliga$ya
+temp_yh <- tippeliga$yh
+temp_ya[temp_ya>4] <- rep(4, length(temp_ya[temp_ya>4]))
+temp_yh[temp_yh>4] <- rep(4, length(temp_yh[temp_yh>4]))
+goals_table <- table(temp_yh, temp_ya)
+chisq.test(goals_table)
 ```
 The column names of this table denote the number of goals scored by the home team, while the row names denote the number of goals scored by the away team. Then the element (0,0) in the table denotes the number of games where both teams scored zero goals (eight games had this result), and the element (2,3) denotes the number of games where the away team scored 2 goals and the away team scored 3 goals (four games had this result), as examples. 
 
