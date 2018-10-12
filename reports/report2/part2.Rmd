@@ -14,15 +14,15 @@ Our data consists of the results of all played football matches of the 2018 Elit
 ## a) Testing independence between home and away team with contingency test
 We wish to test the assumption of independence between the goals made by the home and away team. For testing this independence, we use construct a *contingency table* and preform a *Pearson's* $\chi^2$ *test*. 
 
-We construct the contingency table by using the command `table(tippeliga$yh, tippeliga$ya)` in *R*.
+We construct the contingency table in *R*, defining the groups (where the groups are the number of goals scored) so that at least 80% of the cells in the table have count 5 or more, and none of the cells have count 0 (these are assumptions for the Pearson's chi-squared test to be valid).
 
 ```{r}
 temp_ya <- tippeliga$ya
 temp_yh <- tippeliga$yh
-temp_ya[temp_ya>4] <- rep(4, length(temp_ya[temp_ya>4]))
-temp_yh[temp_yh>4] <- rep(4, length(temp_yh[temp_yh>4]))
+temp_ya[temp_ya>3] <- rep(3, length(temp_ya[temp_ya>3]))
+temp_yh[temp_yh>3] <- rep(3, length(temp_yh[temp_yh>3]))
 goals_table <- table(temp_yh, temp_ya)
-chisq.test(goals_table)
+goals_table
 ```
 The column names of this table denote the number of goals scored by the home team, while the row names denote the number of goals scored by the away team. Then the element (0,0) in the table denotes the number of games where both teams scored zero goals (eight games had this result), and the element (2,3) denotes the number of games where the away team scored 2 goals and the away team scored 3 goals (four games had this result), as examples. 
 
@@ -30,16 +30,15 @@ Let $H_i$ be the event that the home team scores $i$ goals and similarly $A_j$ b
 
 ```{r}
 chisq.test(goals_table)
-qchisq(0.1, 25)
-pchisq(16.387,25, lower.tail = FALSE)
 ```
 ```{r echo = FALSE}
-test = chisq.test(goals_table) #0.90 not significant!
+test = chisq.test(goals_table) 
+df = (nrow(goals_table)-1)*(ncol(goals_table)-1)
 d = test$statistic
-X2 = qchisq(0.1, 25)
-p = pchisq(16.387,25, lower.tail = FALSE)
+X2 = qchisq(0.1, df)
+p = pchisq(d,df, lower.tail = FALSE)
 ```
-We see that our observed test statistic has a value of `r d`, while $\chi^2_{\alpha,25} = $ `r X2`, along with a p-value of `r p`, which means that the assumption that the score of the home team and the score of the away team are independent seems to be quite reasonable.
+We see that our observed test statistic has a value of `r d`, while $\chi^2_{0.1,25} = $ `r X2`, along with a p-value of `r p`, which means that the assumption that the score of the home team and the score of the away team are independent seems to be quite reasonable.
 
 ## b) Team rankings
 After a match, the winning team gets 3 points and the loser gets 0, and if it is a draw both teams get 1 point each.
