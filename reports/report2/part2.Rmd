@@ -139,7 +139,11 @@ t(t(sort(tail(beta, n=16), decreasing=TRUE)))
 TODO: Compare to results in b).
 
 ## d) Simulation
-We now want to investigate the results of future matches using our estimated strengths.
+We now want to investigate the results of future matches using our estimated strengths. We simulate the remainding matches in this years "Eliteserie". This we do by constructing the design matrix $X_{up}$ of these matches, and compute the corresponding $\lambda$ for each team for each match by
+$$
+\hat\lambda_{up} = X_{up} \hat\beta. 
+$$
+The simulations is to draw $N=1000$ realizations of the scores based on a Poisson distribution with $\lambda$ as specified above.
 ```{r}
 filepath <- "https://www.math.ntnu.no/emner/TMA4315/2018h/unplayed2018"
 unplayed <- read.table(file = filepath, header = TRUE, colClasses = c("character", "character"))
@@ -217,8 +221,13 @@ table_sim$team <- rownames(table_sim)
 table_sim <- table_sim[,c(5,1,2,3,4)]
 rownames(table_sim) <- 1:16
 table_sim
+```
+The result of the $N=1000$ simulations is displayed in the matrix `table_sim`, where the column `old.position` indicate where the team was placed as of October 1st, while the table is sorted by the mean placement in the simulation. It is clear Rosenborg end up as the winner in most of the simulations, while Sandefjord ends up as the loser in most. The remainding teams have a somewhat larger spread in their placement, but most teams finish at the same position as they had at October 1st, with some exceptions.
+
+To get a clearer view of the spread in the placement, we consider the histogram of each teams placement.
+```{r}
 position_simulation <- melt(data.frame(position_simulation))
 ggplot(data = position_simulation) + geom_histogram(aes(position_simulation$value), binwidth=0.5) + facet_wrap(~ variable) + xlab("")
 ```
-
+It is clear from the histograms that the teams at the top and bottom of the table have a clear tendency to stay where they are, with large spikes around their October 1st position, while the simulated position of the teams at the middle is more spread. This is consistent with our observations concering the strength parameters, $\beta$, as there are a lot of teams around the middle with very similar strength, while the teams at the top and at the bottom stand out with significantly higher and lower strength respectivley.  
 
