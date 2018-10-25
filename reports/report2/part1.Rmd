@@ -22,10 +22,10 @@ So the log-likelihood is given
 
 $$
 l(\beta) = \log L(\beta) = \sum_{i=1}^n \left( \log \binom{n_i}{y_i} + y_i \log(\pi_i) + (n_i - y_i) \log(1-pi_i)  \right) \\
-= \sum_{i=1}^n \left( \log \binom{n_i}{y_i} + y_i \log\left(\frac{\exp(\beta x_i^T)}{1+\exp(\beta x_i^T)}\right) + (n_i - y_i) \log\left(\frac{1}{1+exp(\beta x_i^T)} \right)  \right). 
+= \sum_{i=1}^n \left( \log \binom{n_i}{y_i} + y_i \log\left(\frac{\exp(\beta x_i^T)}{1+\exp(\beta x_i^T)}\right) + (n_i - y_i) \log\left(\frac{1}{1+\exp(\beta x_i^T)} \right)  \right). 
 $$
 
-To arrive at the maximum likelihood estimators for $\beta$, one would find the maximum of the log-likelihood by numerical optimization. In practice that would mean to find the score function, $S(\beta)$, by differentiating $l(\beta)$, and solve
+To arrive at the maximum likelihood estimators for $\beta$, one would find the maximum of the log-likelihood by numerical optimization. In practice that would mean to find the score function, $S(\beta)$, by differentiating $l(\beta)$, and solving
 
 $$
 S(\beta) = \frac{\partial l(\beta)}{\partial \beta} = 0.
@@ -34,13 +34,13 @@ $$
 This is solved by Newton-Raphson or Fisher Scoring algorithm, which for an exponential distribution with the canonical link (like this model) are the same. It is an iterative method on the form
 
 $$
-\beta^{(t+1)} = \beta^{(t)} + H(\beta^{(t)})^{-1} S(\beta^{(t)}), 
+\beta^{(t+1)} = \beta^{(t)} + F(\beta^{(t)})^{-1} S(\beta^{(t)}), 
 $$
 
-where $S$ is the score function, and $H$ is the Hessian matrix. The Hessian is found either by differentiating the score function and taking the expectation, or calculating the covariance matrix of $S$,
+where $S$ is the score function, and $F$ is the expected Fisher information matrix. The expected Fisher information matrix is found either by differentiating the score function and taking the expectation, or calculating the covariance matrix of $S$,
 
 $$
-H(\beta) = E \left(-  \frac{\partial l(\beta)}{\partial \beta \  \partial \beta^T}\right) = Cov(S(\beta)).
+F(\beta) = E \left(-  \frac{\partial l(\beta)}{\partial \beta \  \partial \beta^T}\right) = Cov(S(\beta)).
 $$
 
 
@@ -67,8 +67,8 @@ $$
 So if $x_{i,\text{height}}$ changes to $x_{i,\text{height}}+1$ the odds change with a factor $\exp(\beta_{\text{height}})$ as 
 
 $$
-\text{odds}_{new} = \exp( \beta_0) \exp( x_{i,\text{height}} \beta_{\text{height}}) \exp((x_{i,\text{prominence}}+1) \beta_{\text{prominence}}) \\
-= \exp( \beta_0) \exp( x_{i,\text{height}} \beta_{\text{height}}) \exp(x_{i,\text{prominence}} \beta_{\text{prominence}}) \exp(\beta_{\text{height}}) = \text{odds}_{old} \exp(\beta_{\text{height}}).
+\text{odds}_{\text{new}} = \exp( \beta_0) \exp( x_{i,\text{height}} \beta_{\text{height}}) \exp((x_{i,\text{prominence}}+1) \beta_{\text{prominence}}) \\
+= \exp( \beta_0) \exp( x_{i,\text{height}} \beta_{\text{height}}) \exp(x_{i,\text{prominence}} \beta_{\text{prominence}}) \exp(\beta_{\text{height}}) = \text{odds}_{\text{old}} \exp(\beta_{\text{height}}).
 $$
 
 Similarly if $x_{i,\text{prominence}}$ changes to $x_{i,\text{prominence}}+1$ the odds change with a factor $\exp(\beta_{\text{prominence}})$. Calculating these factors we get
@@ -102,7 +102,7 @@ pvalue_coeff2
 pvalue_coeff3
 ```
 
-We see that all the coefficients have a small `p`-value, and we would conclude that all the parameters are significant with any reasonable significance level. 
+We see that all the coefficients have a small p-value, and we would conclude that all the parameters are significant with any reasonable significance level. 
 
 
 ### Confidence interval for the parameters
@@ -123,7 +123,7 @@ confint_coeff2
 confint_coeff3
 ```
 
-We can see that the confidence interval for the coefficients $\beta_{height}$ and $\beta_{prominence}$ does not include numbers above 1, implying that we can with a confidence level of 95\% claim that the effect of both height and prominence have a negative effect of the odds.
+We can see that the confidence interval for the coefficients $\beta_{\text{height}}$ and $\beta_{\text{prominence}}$ does not include numbers above 1, implying that we can with a confidence level of 95\% claim that the effect of both height and prominence have a negative effect of the odds.
 
 ###Confidence interval for exponential transform
 
@@ -155,7 +155,7 @@ $$
 D_i = \text{sign}(y_i - \hat{y}_i) \cdot -2 (l(\hat{\pi}_i) - l(\tilde{\pi}_i)) = \text{sign}(y_i - \hat{\pi}_i n_i) \cdot -2 ( n_i (\log(\hat{\pi}_i) -\log(y_i /n_i) + (n_i -y_i) (\log (1-\hat{\pi}_i) - \log(1-(\frac{y_i}{n_i}))) ). 
 $$
 
-We calculate the deviance of each mountain with the build in R-function, and plot the deviance against height and prominence:
+We calculate the deviance of each mountain with the built in R-function, and plot the deviance against height and prominence:
 ```{r}
 deviance_vector <- residuals(model, type="deviance")
 gg_frame <- data.frame(height <- mount$height, prominence <- mount$prominence, deviance <- deviance_vector)
@@ -239,7 +239,7 @@ We see that the estimated probability of successfully climbing mount Everest is 
 
 ### Chogolisa
 
-We have that $x_{chogolisa, height} = 7665$ and $x_{chogolisa, prominence} = 1624$. We calculate the estimated probability for success, and corresponding 95\% confidence interval, in the same way as for Mount Everest. In addition we calculate the estimated $y_{chogolisa}$ by $\hat y_{chogolisa} = \hat\pi_{chogolosa} n_{chogolisa}$, and the confidence interval.
+We have that $x_{\text{chogolisa, height}} = 7665$ and $x_{\test{chogolisa, prominence}} = 1624$. We calculate the estimated probability for success, and corresponding 95\% confidence interval, in the same way as for Mount Everest. In addition we calculate the estimated $y_{\text{chogolisa}}$ by $\hat y_{\text{chogolisa}} = \hat\pi_{\test{chogolosa}} n_{\text{chogolisa}}$, and the confidence interval.
 
 ```{r}
 height_chogolisa <- 7665
