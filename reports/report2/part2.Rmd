@@ -135,7 +135,7 @@ Based on these estimates we also make a ranking for all the teams:
 t(t(sort(tail(beta, n=16), decreasing=TRUE)))
 ```
 
-TODO: Compare to results in b).
+Comparing this ranking to the one produced in b), we note that thetop and bottom ranking are the same, but that there is some variation among the middle rankings. TODO: What is this due to?
 
 ## d) Simulation
 We now want to investigate the results of future matches using our estimated strengths. We simulate the remainding matches in this years "Eliteserie". This we do by constructing the design matrix $X_{up}$ of these matches, and compute the corresponding $\lambda$ for each team for each match by
