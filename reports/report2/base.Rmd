@@ -3,13 +3,13 @@ title: "TMA4315: Compulsory exercise 2"
 subtitle: "Group 13: Magnus Liland, Jakob Gerhard Martinussen and Emma Skarstein"
 date: "`r format(Sys.time(), '%d.%m.%Y')`" # the current date, can be regular text as well
 output: 
-  html_document:
-    toc: yes
-    toc_depth: 3
-    toc_float: yes
-#   pdf_document:
-#    toc: false
-#    toc_depth: 2
+  # html_document:
+  #   toc: yes
+  #   toc_depth: 3
+  #   toc_float: yes
+  pdf_document:
+   toc: false
+   toc_depth: 2
 ---
 
 ```{r setup, include = FALSE}
@@ -25,5 +25,3 @@ opts_chunk$set(tidy.opts = list(width.cutoff = 68), tidy = TRUE, warning = FALSE
 ```{r child = 'part2.Rmd'}
 ```
 
-```{r child = 'source_code.Rmd'}
-```

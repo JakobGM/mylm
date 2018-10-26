@@ -21,7 +21,9 @@ $$
 So the log-likelihood is given
 
 $$
-l(\beta) = \log L(\beta) = \sum_{i=1}^n \left( \log \binom{n_i}{y_i} + y_i \log(\pi_i) + (n_i - y_i) \log(1-pi_i)  \right) \\
+l(\beta) = \log L(\beta) = \sum_{i=1}^n \left( \log \binom{n_i}{y_i} + y_i \log(\pi_i) + (n_i - y_i) \log(1-pi_i)  \right)
+$$
+$$
 = \sum_{i=1}^n \left( \log \binom{n_i}{y_i} + y_i \log\left(\frac{\exp(\beta x_i^T)}{1+\exp(\beta x_i^T)}\right) + (n_i - y_i) \log\left(\frac{1}{1+\exp(\beta x_i^T)} \right)  \right). 
 $$
 
@@ -68,6 +70,8 @@ So if $x_{i,\text{height}}$ changes to $x_{i,\text{height}}+1$ the odds change w
 
 $$
 \text{odds}_{\text{new}} = \exp( \beta_0) \exp( x_{i,\text{height}} \beta_{\text{height}}) \exp((x_{i,\text{prominence}}+1) \beta_{\text{prominence}}) \\
+$$
+$$
 = \exp( \beta_0) \exp( x_{i,\text{height}} \beta_{\text{height}}) \exp(x_{i,\text{prominence}} \beta_{\text{prominence}}) \exp(\beta_{\text{height}}) = \text{odds}_{\text{old}} \exp(\beta_{\text{height}}).
 $$
 
@@ -152,7 +156,10 @@ $$
 where $\tilde{\pi}$ denote the probability for the saturated model. This probability is simply $\tilde{\pi}_i = y_i / n_i$, such that the estimated number of successes is equal to the actual number for each mountain. The deviance for mountain $i$ is 
 
 $$
-D_i = \text{sign}(y_i - \hat{y}_i) \cdot -2 (l(\hat{\pi}_i) - l(\tilde{\pi}_i)) = \text{sign}(y_i - \hat{\pi}_i n_i) \cdot -2 ( n_i (\log(\hat{\pi}_i) -\log(y_i /n_i) + (n_i -y_i) (\log (1-\hat{\pi}_i) - \log(1-(\frac{y_i}{n_i}))) ). 
+D_i = \text{sign}(y_i - \hat{y}_i) \cdot (-2) (l(\hat{\pi}_i) - l(\tilde{\pi}_i))
+$$
+$$
+= \text{sign}(y_i - \hat{\pi}_i n_i) \cdot (-2) ( n_i (\log(\hat{\pi}_i) -\log(y_i /n_i) + (n_i -y_i) (\log (1-\hat{\pi}_i) - \log(1-(\frac{y_i}{n_i}))) ). 
 $$
 
 We calculate the deviance of each mountain with the built in R-function, and plot the deviance against height and prominence:
@@ -239,7 +246,7 @@ We see that the estimated probability of successfully climbing mount Everest is 
 
 ### Chogolisa
 
-We have that $x_{\text{chogolisa, height}} = 7665$ and $x_{\test{chogolisa, prominence}} = 1624$. We calculate the estimated probability for success, and corresponding 95\% confidence interval, in the same way as for Mount Everest. In addition we calculate the estimated $y_{\text{chogolisa}}$ by $\hat y_{\text{chogolisa}} = \hat\pi_{\test{chogolosa}} n_{\text{chogolisa}}$, and the confidence interval.
+We have that $x_{\text{chogolisa, height}} = 7665$ and $x_{\text{chogolisa, prominence}} = 1624$. We calculate the estimated probability for success, and corresponding 95\% confidence interval, in the same way as for Mount Everest. In addition we calculate the estimated $y_{\text{chogolisa}}$ by $\hat y_{\text{chogolisa}} = \hat\pi_{\text{chogolosa}} n_{\text{chogolisa}}$, and the confidence interval.
 
 ```{r}
 height_chogolisa <- 7665
