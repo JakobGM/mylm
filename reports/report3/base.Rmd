@@ -43,7 +43,7 @@ The number of schools is 49, as we omit school number 43 due to the lack of meas
 
 # Analysis
 
-## a)
+## a) Fitting a linear model
 
 ### Visualizing the dataset
 
