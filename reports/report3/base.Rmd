@@ -40,3 +40,24 @@ dataset <- read.table("https://www.math.ntnu.no/emner/TMA4315/2018h/jsp2.txt", h
 ```
 
 The number of schools is 49, as we omit school number 43 due to the lack of measurements for our particular subset.
+
+# Analysis
+
+## a)
+
+First we want to explore the dataset. We will group the data based on `gender` and only include covariates `social`, `raven`, and `math`.
+
+```{r}
+library(GGally)
+ggpairs(
+  data = dataset,
+  mapping = aes(col = gender, alpha = 0.7),
+  columns = c("social", "raven", "math"),
+  legend = 1,
+)
+```
+
+Some observations can be made:
+
+* A positive correlation can be observed between `raven` and `math` score for both genders, although the correlation is marginally stronger for boys. The Raven test [measures abstract reasoning capabilities](https://en.wikipedia.org/wiki/Raven%27s_Progressive_Matrices), so this makes intuitive sense.
+* Girls perform, on average, better than boys on the math test. The weakest math students are mainly boys, and the strongest math students are mainly girls, as well.
