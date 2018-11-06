@@ -102,3 +102,7 @@ Y_k = 0.1965 \cdot x_{k, \text{raven}} + 1.225.
 $$
 
 Making the statistical advantage of female students apparent.
+
+With this model we investigate how two different factors affect the mathematical capabilities of a student.
+The first of these factors is gender. Gender does indeed seem to have a significant effect, as girls seem to achieve better math scores than boys.
+Secondly, there is a positive correlation between the performing well on the "Raven" test and the mathematics test. As the Raven test measures abstract, cognitive capabilities, this comes at no large surprise.
