@@ -19,7 +19,7 @@ library(knitr)
 opts_chunk$set(tidy.opts = list(width.cutoff = 68), tidy = TRUE, warning = FALSE, error = FALSE, message = FALSE, echo = TRUE)
 ```
 
-## The dataset
+# The dataset
 
 We will use a *simulated* dataset with clustered data. This data is generated from a fitted model to the `jsp` dataset in the `faraway` R-package.
 
@@ -45,6 +45,8 @@ The number of schools is 49, as we omit school number 43 due to the lack of meas
 
 ## a)
 
+### Visualizing the dataset
+
 First we want to explore the dataset. We will group the data based on `gender` and only include covariates `social`, `raven`, and `math`.
 
 ```{r}
@@ -61,3 +63,19 @@ Some observations can be made:
 
 * A positive correlation can be observed between `raven` and `math` score for both genders, although the correlation is marginally stronger for boys. The Raven test [measures abstract reasoning capabilities](https://en.wikipedia.org/wiki/Raven%27s_Progressive_Matrices), so this makes intuitive sense.
 * Girls perform, on average, better than boys on the math test. The weakest math students are mainly boys, and the strongest math students are mainly girls, as well.
+
+### Fitting a linear model
+
+
+We will now fit a _linear model_ with `math` as response, and `raven` and `gender` as covariates. The model for the $k$th student is therefore
+
+$$
+Y_k = {\bf x}_k^\text{T} \pmb{\beta} + \varepsilon_k
+$$
+
+where we assume that the $\varepsilon_k$s are independent (between students), and have mean 0 and variance $\sigma^2$ for all students. Some explanations for the terms in the model:
+
+* $Y_k$ is the **predicted** `math` score for student $k$. It is assumed to be normally distributed with mean ${\bf x}_k \pmb \beta$ and variance $\sigma^2$.
+* ${\bf x}_k$ is a $3 \times 1$ **covariate vector** for student $k$. For instance, if student $k$ is a boy with `raven` score 5, then ${\bf x}_k = [1, 0, 5]^\text{T}$. Observe that ${\bf x}_{k0}$ is always 0, since this covariate "represents" the intercept of the model.
+* $\pmb{\beta}$ is the **regression coefficients** of the fitted model. $\pmb{\beta} = [\beta_{\text{intercept}}, \beta_{\text{raven}}, \beta_{\text{gender}}]^\text{T}$. For example, you would expect a given student to improve their `math` score by $\beta_{\text{raven}}$ if the student improves their `raven` score by one, everything else being equal.
+* $\varepsilon_k$ is the **error** in the modelled relationship for student $k$. The important part here is that $\varepsilon_k$ is assumed to be independently and identically distributed with mean $0$ and variance $\sigma^2$ for *all* students.
