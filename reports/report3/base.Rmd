@@ -1,0 +1,42 @@
+--- 
+title: "TMA4315: Compulsory exercise 3" 
+subtitle: "Group 13: Magnus Liland, Jakob Gerhard Martinussen and Emma Skarstein"
+date: "`r format(Sys.time(), '%d.%m.%Y')`" # the current date, can be regular text as well
+output: 
+  # html_document:
+  #   toc: yes
+  #   toc_depth: 3
+  #   toc_float: yes
+  pdf_document:
+   toc: false
+   toc_depth: 2
+---
+
+```{r setup, include = FALSE}
+library(formatR)
+showsol <- FALSE
+library(knitr)
+opts_chunk$set(tidy.opts = list(width.cutoff = 68), tidy = TRUE, warning = FALSE, error = FALSE, message = FALSE, echo = TRUE)
+```
+
+## The dataset
+
+We will use a *simulated* dataset with clustered data. This data is generated from a fitted model to the `jsp` dataset in the `faraway` R-package.
+
+The following variables are made available:
+
+* `school`: 50 schools, with code 1-50.
+* `gender`: A factor with levels boy, girl.
+* `social`: Social class of the father, categorical.
+    Original class 1-2 = S1, 3-4 = S2, 5-6 = S3 and 7-9 = S4
+    Note that these are not ordered and S1 is not necessarily higher or lower class than S2!
+* `raven`: Test score (centered around 0).
+* `math`: Math score (centered around 0).
+
+We will use `math` as response, and group the data by school.
+
+```{r, echo = TRUE}
+dataset <- read.table("https://www.math.ntnu.no/emner/TMA4315/2018h/jsp2.txt", header = TRUE)
+```
+
+The number of schools is 49, as we omit school number 43 due to the lack of measurements for our particular subset.
