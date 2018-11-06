@@ -79,3 +79,26 @@ where we assume that the $\varepsilon_k$s are independent (between students), an
 * ${\bf x}_k$ is a $3 \times 1$ **covariate vector** for student $k$. For instance, if student $k$ is a boy with `raven` score 5, then ${\bf x}_k = [1, 0, 5]^\text{T}$. Observe that ${\bf x}_{k0}$ is always 0, since this covariate "represents" the intercept of the model.
 * $\pmb{\beta}$ is the **regression coefficients** of the fitted model. $\pmb{\beta} = [\beta_{\text{intercept}}, \beta_{\text{raven}}, \beta_{\text{gender}}]^\text{T}$. For example, you would expect a given student to improve their `math` score by $\beta_{\text{raven}}$ if the student improves their `raven` score by one, everything else being equal.
 * $\varepsilon_k$ is the **error** in the modelled relationship for student $k$. The important part here is that $\varepsilon_k$ is assumed to be independently and identically distributed with mean $0$ and variance $\sigma^2$ for *all* students.
+
+Now let's estimate the regression coefficients of this linear model and inspect its summary:
+
+```{r}
+model <- lm(math ~ raven + gender, data=dataset)
+summary(model)
+```
+
+The parameter estimates seem to be significant. We have $\beta \approx [-1.3131, 0.1965, 2.5831]^{\text{T}}$. A girl is expected to achieve ~2.5 additional `math` points compared to a boy with the same number of `raven` points. Additionally, a student is expected to score ~0.2 additional `math` points for every `raven` point he or she achieves.
+
+We can rewrite this model as two separate models, one for boys and one for girls, making these relationships clear. For boys
+
+$$
+Y_k = 0.1965 \cdot x_{k, \text{raven}} - 1.3131,
+$$
+
+and likewise for girls
+
+$$
+Y_k = 0.1965 \cdot x_{k, \text{raven}} + 1.225.
+$$
+
+Making the statistical advantage of female students apparent.
