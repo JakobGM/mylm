@@ -169,3 +169,11 @@ Quoting ["Fitting Linear Mixed-Effects Models Using lme4"](https://www.jstatsoft
 The $T$-distribution can therefore not be used for a hypothesis test for finite size samples without making a lot of assumptions which might render the conclusion invalid.
 
 A rationalization can also be found the email thread ["lmer, p-values and all that"](https://stat.ethz.ch/pipermail/r-help/2006-May/094765.html) written by Douglas Bates, the author of the `lme4` R-package.
+
+We will now ignore all these wise words, arguing that our sample size is large enough and well-behaved, and still calculate a $p$-value for the following hypothesis test.
+
+$$
+\mathbf{H}_0: \beta_{\text{raven}} = 0 ~~~\text{vs.}~~~ \mathbf{H}_1: \beta_{\text{raven}} \neq 0
+$$
+
+With other words, we want to find out how probable it is that a student's `raven` score has absolutely no effect on the `math` score of the same student. We will perform this test using the *asymptotic* (normal) distribution of $\beta_{\text{raven}}$.
