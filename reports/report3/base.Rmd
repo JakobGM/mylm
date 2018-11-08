@@ -137,3 +137,21 @@ It is important to note that we have made the following distributional assumptio
 
 
 We have also assumed that there is zero correlation between responses in *different* clusters, and we only have **intraclass correlation**. With other words, $\mathrm{Cov}(Y_{ij}, Y_{kl}) = 0$ for $i \neq k$.
+
+
+### Fitting the model
+
+We will now fit this model for our dataset using the `lmer` function from the `lem4` R-package, and print a summary of this fitted model:
+
+```{r}
+library(lme4)
+fitRI1 <- lmer(
+    math ~ raven + gender + (1 | school),
+    data = dataset,
+)
+summary(fitRI1)
+```
+
+We can now compare this *random intercept model* with the *classical linear model* in section a). First observe that $\beta_{\text{raven}}$ has changed from `0.1965` to `0.2144`. The random intercept model has therefore concluded that `raven` score has a even stronger effect upon the `math` score of the pupils. For every additional `raven` score, a student is predicted to score `0.2144` more on the `math` test, everything else being equal.
+
+Also $\beta_{\text{gender}}$ has changed from `2.5381` to `2.5312`. The random intercept model therefore concludes that `gender` has less of an impact on predicted `math` score compared to the classical linear model. The difference is relatively small though, so the models can be said to have similar conclusions regarding gender. A girl is predicted to score `2.5312` more than a boy with the otherwise identical covariate attributes.
