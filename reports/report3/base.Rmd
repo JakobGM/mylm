@@ -134,3 +134,6 @@ It is important to note that we have made the following distributional assumptio
 
 * $\gamma_{0i} \sim \text{N}_{1}(0, \tau_0^2)$, where $\tau_0^2$ is a scalar which must be estimated.
 * $\varepsilon_{i} \sim \text{N}_{n_i}(0, \sigma^2 I)$, where $\sigma^2$, the variance, also must be estimated.
+
+
+We have also assumed that there is zero correlation between responses in *different* clusters, and we only have **intraclass correlation**. With other words, $\mathrm{Cov}(Y_{ij}, Y_{kl}) = 0$ for $i \neq k$.
