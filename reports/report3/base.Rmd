@@ -106,3 +106,25 @@ Making the statistical advantage of female students apparent.
 With this model we investigate how two different factors affect the mathematical capabilities of a student.
 The first of these factors is gender. Gender does indeed seem to have a significant effect, as girls seem to achieve better math scores than boys.
 Secondly, there is a positive correlation between the performing well on the "Raven" test and the mathematics test. As the Raven test measures abstract, cognitive capabilities, this comes at no large surprise.
+
+
+---
+
+## b) Fitting a random intercept model
+
+### Explanation of the model
+
+We will now fit a *random intercept model* with `school` as the random intercept. For school $i$ we study the measurement model:
+
+$$
+{\bf Y}_{i} = {\bf X}_i\beta + {\bf 1} \gamma_{0i} + \varepsilon_{i}
+$$
+
+We denote the number of students in school $i$ as $n_i$, often called a **cluster**.
+Here follows some explanations of the different parts of the model:
+
+* ${\bf Y}_{i}$ is the $n_1 \times 1$ **response vector** for school $i$, containing the math scores of each student enrolled in that school.
+* ${\bf X}_i$ is the $n_i \times 3$ **design matrix** of the model, containing "population covariates" for each school $i$s student on each row.
+* The $3 \times 1$ vector $\beta$ contains the **fixed effects** of the model. These "population effects" are common amongst *all* the schools.
+* The $n_1 \times 1$ vector ${\bf 1} \gamma_{0i}$ contains the **random effects** of the model. Specifically in this case, since we have fitted a *random intercept model*, we have a **random intercept** and *no* random slope. ${\bf 1}$ is a $n_i \times 1$ vector containing solely ones, while $\gamma_{0i} \in ℝ$. With other words, ${\bf 1} \gamma_{0i} = [\gamma_{0i}, ..., \gamma_{0i}]^\text{T}$.
+* The $n_i \times 1$ vector $\varepsilon_{i}$ contains the **random errors** in the model prediction.
