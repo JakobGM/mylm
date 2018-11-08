@@ -128,3 +128,9 @@ Here follows some explanations of the different parts of the model:
 * The $3 \times 1$ vector $\beta$ contains the **fixed effects** of the model. These "population effects" are common amongst *all* the schools.
 * The $n_1 \times 1$ vector ${\bf 1} \gamma_{0i}$ contains the **random effects** of the model. Specifically in this case, since we have fitted a *random intercept model*, we have a **random intercept** and *no* random slope. ${\bf 1}$ is a $n_i \times 1$ vector containing solely ones, while $\gamma_{0i} \in ℝ$. With other words, ${\bf 1} \gamma_{0i} = [\gamma_{0i}, ..., \gamma_{0i}]^\text{T}$.
 * The $n_i \times 1$ vector $\varepsilon_{i}$ contains the **random errors** in the model prediction.
+
+
+It is important to note that we have made the following distributional assumptions:
+
+* $\gamma_{0i} \sim \text{N}_{1}(0, \tau_0^2)$, where $\tau_0^2$ is a scalar which must be estimated.
+* $\varepsilon_{i} \sim \text{N}_{n_i}(0, \sigma^2 I)$, where $\sigma^2$, the variance, also must be estimated.
