@@ -152,6 +152,20 @@ fitRI1 <- lmer(
 summary(fitRI1)
 ```
 
+### Comparing the models
+
 We can now compare this *random intercept model* with the *classical linear model* in section a). First observe that $\beta_{\text{raven}}$ has changed from `0.1965` to `0.2144`. The random intercept model has therefore concluded that `raven` score has a even stronger effect upon the `math` score of the pupils. For every additional `raven` score, a student is predicted to score `0.2144` more on the `math` test, everything else being equal.
 
 Also $\beta_{\text{gender}}$ has changed from `2.5381` to `2.5312`. The random intercept model therefore concludes that `gender` has less of an impact on predicted `math` score compared to the classical linear model. The difference is relatively small though, so the models can be said to have similar conclusions regarding gender. A girl is predicted to score `2.5312` more than a boy with the otherwise identical covariate attributes.
+
+### Hypothesis testing
+
+Observe that the output of `summary(fitRI1)` does *not* contain any $p$-values, as we have grown accustomed to with the `lm` and `glm` models. This is intentionally omitted by the `lme4` library authors, as there are a lot of "gotchas" related to the calculation of $p$-values for parameter estimations wrt. linear mixed models.
+
+Quoting ["Fitting Linear Mixed-Effects Models Using lme4"](https://www.jstatsoft.org/index.php/jss/article/view/v067i01/v67i01.pdf) by Bates, Bolker, Mächler and Walker (2015) in Journal of Statistical Software (p. 35):
+
+> While the null distributions (and the sampling distributions of non-null estimates) are asymptotically normal, these distributions are not $t$ distributed for finite size samples – nor are the corresponding null distributions of differences in scaled deviances F distributed.
+
+The $T$-distribution can therefore not be used for a hypothesis test for finite size samples without making a lot of assumptions which might render the conclusion invalid.
+
+A rationalization can also be found the email thread ["lmer, p-values and all that"](https://stat.ethz.ch/pipermail/r-help/2006-May/094765.html) written by Douglas Bates, the author of the `lme4` R-package.
