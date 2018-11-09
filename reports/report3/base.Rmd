@@ -49,7 +49,7 @@ The number of schools is 49, as we omit school number 43 due to the lack of meas
 
 First we want to explore the dataset. We will group the data based on `gender` and only include covariates `social`, `raven`, and `math`.
 
-```{r}
+```{r, cache = TRUE}
 library(GGally)
 ggpairs(
   data = dataset,
@@ -235,3 +235,44 @@ confint(fitRI1, method='Wald')[5,]
 ```
 
 Since the entirety of the $95\%$ confidence interval is contained by $ℝ^+$, we can confidently conclude that girls perform better on the `math` test compared to boys.
+
+
+## c) Random intercept model without `gender` covariate
+
+We now fit a random intercept model, still clustered by school, but *without* `gender` as a fixed effect.
+
+```{r, echo=FALSE}
+detach('package:lmerTest', unload=TRUE)
+```
+
+```{r}
+fitRI2 <- lmer(math ~ raven + (1 | school), data=dataset)
+```
+
+### Covariance and correlation calculations
+
+The covariance between response ${\bf Y}_{ij}$ and ${\bf Y}_{il}$ from the same school $i$ has the following form:
+
+$$
+\mathrm{Cov}(Y_{ij}, Y_{il}) = \begin{cases} \tau_0^2 ~~~&\text{, if}~j \neq l \\ \tau_0^2 + \sigma^2 ~~~&\text{, if}~j = l \end{cases}
+$$
+
+Notice the *compound symmetry*. The *intraclass correlation* can now be simply derived as:
+
+$$
+\mathrm{Corr}(Y_{ij}, Y_{il}) = \frac{\tau_0^2}{\tau_0^2 + \sigma^2} ~~~\text{, }~j \neq l.
+$$
+
+We can retrieve these values from the summary of our fit:
+
+```{r}
+summary(fitRI2)
+```
+
+For our specific model fit we have $\hat{\tau_0^2} = 4.002$ and $\hat{\sigma^2} = 20.711$.
+Inserting this into the correlation formula yields $\mathrm{Corr}(Y_{ij}, Y_{il}) \approx 0.162$.
+Such a correlation calculation will *always* yield a positive correlation, due to model assumptions.
+
+In this case we observe a somewhat weak positive correlation, but not necessarily insignificant.
+There is good reason to believe that if one student performs well at a school, others will do as well, and vice versa.
+This can be explained by school resources, social climate, knowledge sharing, and a multitude of other factors.
