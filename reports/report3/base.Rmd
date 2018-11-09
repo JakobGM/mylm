@@ -439,7 +439,9 @@ Again, the intercepts seem to be relatively symmetric around $0$, and the badly 
 an outlier in this plot.
 
 
-## d) Including social status of father as a fixed effect
+## d) Expanding the model
+
+### Adding social status of father as a fixed effect
 
 We now include the `social` status of the father of the students as a *fixed effect*, and compare this expanded model
 with the previous "sub-model".
@@ -449,10 +451,15 @@ fitRI3 <- lmer(math ~ raven + social + (1 | school), data = dataset)
 anova(fitRI2, fitRI3)
 ```
 
-Note: Observe that `anova` reports *"refitting model(s) with ML (instead of REML)"* when invoked with `lmer` fitted
+*Note:* Observe that `anova` reports *"refitting model(s) with ML (instead of REML)"* when invoked with `lmer` fitted
 mixed effects models. The reason for this is that `lmer` uses the **restricted maximum likelihood** method to determine the
 model parameters instead of the classical **maximum likelihood** method. REML is used because it is *less* downwards
 biased than ML. The problem with REML is that two different covariate structures will result in different mean structures.
 This causes the log-likelihoods to be based on *different* observations, and the assumptions of ANOVA are therefore
 not applicable anymore. This is "solved" by refitting the models with the ML method instead, before comparing them
 with ANOVA analysis.
+
+The addition of social status to the model seems not to have a great impact on the log-likelihood of the model fit.
+The BIC and AIC heuristics also seem to disagree on which model to choose in this case. We would therefore opt for
+the simpler model in order to prevent overfitting.
+This is an opinion loosely held, though.
