@@ -466,10 +466,25 @@ This is an opinion loosely held, though.
 
 ### Adding a random slope to the model
 
+We now add a *random slope* for the `raven` score at each school, in addition to the random intercept to the model,
+
+#### Formulae for random intercept and slope
+
+The cluster specific formula for the random intercept and slope model is as follows:
+
+$$
+{\bf Y}_{i} = {\bf X}_i\beta + {\bf U_i} \gamma_{i} + \varepsilon_{i}
+$$
+
+Written more explicitly for our model:
+
+$$
+{\bf Y}_{i} = {\bf 1} \beta_{\text{intercept}} + x_{\text{i, raven}} \beta_{\text{raven}} + {\bf 1} \gamma_{i0} + x_{\text{i, raven}} \gamma_{i, \text{raven}} + \varepsilon_{i}
+$$
+
 #### Fitting the new model
 
-We now add a *random slope* for the `raven` score at each school, in addition to the random intercept to the model,
-and print a summary of this new model.
+We can now fit this new model and print a summary.
 
 ```{r}
 fitRIS <- lmer(math ~ raven + (1 + raven | school), data = dataset)
