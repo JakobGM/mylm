@@ -409,3 +409,31 @@ gg5
 
 Arguably, the residuals portray normal (as in distribution) behaviour, and we are relatively confident in our assumption
 of $\varepsilon_i \sim N(0, \sigma^2)$.
+
+#### Visualizing the predicted random intercepts
+
+We now plot the regression curves for every single school.
+
+```{r}
+df <- data.frame(
+  x = rep(range(dataset$raven), each = 49),
+  y = coef(fitRI2)$school[,1] + coef(fitRI2)$school[,2] * rep(range(dataset$raven), each = 49),
+  School = factor(rep(c(1:42, 44:50), times = 2))
+)
+ggplot(df, aes(x = x, y = y, col = School)) +
+  geom_line() +
+  geom_hline(yintercept=0, linetype='solid', color='grey') +
+  geom_vline(xintercept=0, linetype='solid', color='green') +
+  labs(x = "raven score", y = "math score")
+```
+
+These lines represent the model predictions split by school, depending on the `raven` score of the student.
+
+As you can see, all the schools have identical slopes but different intercepts, as expected for a random intercept model.
+
+The green slice representing `raven` $= 0$ shows the intercept values for each school, and it is these values that have
+been discussed thoroughly in previous plots. You could therefore argue that this plot is somewhat redundant, but it offers
+a clear picture of all of the 49 "sub-models", one for each school.
+
+Again, the intercepts seem to be relatively symmetric around $0$, and the badly performing school clearly appears as
+an outlier in this plot.
