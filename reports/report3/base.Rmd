@@ -227,3 +227,11 @@ summary(fitRI1Test)
 ```
 
 All three methods yield the same result, we can relatively confidently assume `raven` scores to have an impact on `math` scores.
+
+We can also construct a $95\%$ confidence interval for the effect of the female gender on the `math` score, using the Wald approximation for fixed effects:
+
+```{r}
+confint(fitRI1, method='Wald')[5,]
+```
+
+Since the entirety of the $95\%$ confidence interval is contained by $ℝ^+$, we can confidently conclude that girls perform better on the `math` test compared to boys.
