@@ -257,7 +257,11 @@ $$
 \mathrm{Cov}(Y_{ij}, Y_{il}) = \begin{cases} \tau_0^2 ~~~&\text{, if}~j \neq l \\ \tau_0^2 + \sigma^2 ~~~&\text{, if}~j = l \end{cases}
 $$
 
-Notice the *compound symmetry*. The *intraclass correlation* can now be simply derived as:
+Recall that $\tau_0^2$ is the variance of the normally distributed random intercept, $\gamma_{0i}$,
+and that $\sigma^2$ is the variance of the error term $\epsilon_{ij}$, also normally distributed.
+
+Also interest, notice the *compound symmetry* of this expression.
+The *intraclass correlation* can now be simply derived as:
 
 $$
 \mathrm{Corr}(Y_{ij}, Y_{il}) = \frac{\tau_0^2}{\tau_0^2 + \sigma^2} ~~~\text{, }~j \neq l.
@@ -276,3 +280,36 @@ Such a correlation calculation will *always* yield a positive correlation, due t
 In this case we observe a somewhat weak positive correlation, but not necessarily insignificant.
 There is good reason to believe that if one student performs well at a school, others will do as well, and vice versa.
 This can be explained by school resources, social climate, knowledge sharing, and a multitude of other factors.
+
+### Random intercept parameter prediction
+
+The formula for $\gamma_{0i}$ in the random intercept model is
+
+$$
+\hat{\gamma}_{0i}=\frac{n_i \hat{\tau}_{0}^2}{\hat{\sigma}^2+n_i \hat{\tau}_{0}^2}e_i,
+$$
+
+$e_i$ is here the **average residual** of the predictions rendered by the *systematic effects* of the model (for school $i$):
+
+$$
+e_i := \frac{1}{n_i} \sum_{j=1}^{n_i} (Y_{ij}-{\bf x}_{ij}^T\hat{{\boldsymbol \beta}}).
+$$
+
+We can interpret the formula for $\gamma_{0i}$ as a *weighted sum* between the conditional expectation $0$ and the average residual $e_i$,
+the weight being:
+
+$$
+\frac{n_i \hat{\tau}_{0}^2}{\hat{\sigma}^2+n_i \hat{\tau}_{0}^2}
+$$
+
+Some notes regarding the weighting:
+
+* $n_i \hat{\tau}_{0}^2$ is the predicted intraclass covariance weighted by the number of observations in that class.
+  The more observations, the greater credence can be given to the predicted correlation.
+* $\hat{\sigma}^2$ is the variance observed in the entire population.
+  If this value is large, it is difficult to distinguish genuine large correlations from random effects arising from large variance.
+* The weighting therefore represents the intraclass covariance as a fraction of the population variance.
+* If $\hat{\sigma}^2$ grows large compared to $n_i \hat{\tau}_{0}^2$, population variance dominates intraclass correlation.
+  There is therefore good reason to believe that the intercept should not be set too hight for the class, and the weight approaches 0.
+* Oppositely, the weight approaches 1 if intraclass correlation dominates. The intercept is therefore set to the average of the residuals,
+  since all of them can be explained by a normal distribution around the class' intercept.
