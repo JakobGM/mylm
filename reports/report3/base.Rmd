@@ -463,3 +463,50 @@ The addition of social status to the model seems not to have a great impact on t
 The BIC and AIC heuristics also seem to disagree on which model to choose in this case. We would therefore opt for
 the simpler model in order to prevent overfitting.
 This is an opinion loosely held, though.
+
+### Adding a random slope to the model
+
+#### Fitting the new model
+
+We now add a *random slope* for the `raven` score at each school, in addition to the random intercept to the model,
+and print a summary of this new model.
+
+```{r}
+fitRIS <- lmer(math ~ raven + (1 + raven | school), data = dataset)
+summary(fitRIS)
+```
+
+The estimated variance of this random slope, $0.7293$, is quite a lot more than we expected.
+Schools vary drastically when it comes to the ability to transfer students capabilities in the `raven` test
+over to the `math` test, according to our model.
+
+#### Visualizing sub-models for each school
+
+These different slopes and intercept for each school in this new model can be visualized as follows:
+
+```{r}
+df <- data.frame(
+  x = rep(range(dataset$raven), each = 49),
+  y = coef(fitRIS)$school[,1] + coef(fitRIS)$school[,2] * rep(range(dataset$raven), each = 49),
+  School = factor(rep(c(1:42, 44:50), times = 2))
+)
+gg1 <- ggplot(df, aes(x = x, y = y, col = School)) +
+  geom_line()
+gg1
+```
+
+The variance of the intercepts have been greatly reduced, and much of the differences between schools are
+now attributed to different slopes instead.
+
+#### Visualizing distribution of random intercepts and slopes
+
+We can also visualize the values for the predicted intercepts and slopes of this mixed effects model:
+
+```{r}
+gg2 <- plot_model(fitRIS, type = "re", sort.est = "(Intercept)", y.offset = 0.4, dot.size = 1.5) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
+  labs(title = "Random intercept (RI)")
+gg2
+```
+
+Again, we observe relative symmetric distribution around $0$ for both prediction types, as assumed.
