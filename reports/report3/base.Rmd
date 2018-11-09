@@ -16,7 +16,7 @@ output:
 library(formatR)
 showsol <- FALSE
 library(knitr)
-opts_chunk$set(tidy.opts = list(width.cutoff = 68), tidy = TRUE, warning = FALSE, error = FALSE, message = FALSE, echo = TRUE)
+opts_chunk$set(tidy.opts = list(width.cutoff = 68), tidy = FALSE, warning = FALSE, error = FALSE, message = FALSE, echo = TRUE)
 ```
 
 # The dataset
@@ -313,3 +313,99 @@ Some notes regarding the weighting:
   There is therefore good reason to believe that the intercept should not be set too hight for the class, and the weight approaches 0.
 * Oppositely, the weight approaches 1 if intraclass correlation dominates. The intercept is therefore set to the average of the residuals,
   since all of them can be explained by a normal distribution around the class' intercept.
+
+
+### Visual analysis
+
+Now we will use the `ggplot2` R-package in order to inspect model fit and if the model's assumptions are satisfied or not.
+
+#### QQ-plot of random intercepts
+
+We start of by using the `plot_model` function from the `sjPlot` package in order to check model assumptions.
+
+```{r}
+library(ggplot2)
+library(sjPlot)
+library(ggpubr)
+gg1 <- plot_model(fitRI2, type = "diag", prnt.plot = FALSE, geom.size = 1)
+gg1[[2]]$school + ggtitle("QQ-plot of random intercepts")
+```
+
+This plot QQ-plot can be used to check if the assumption of normal distribution of the random intercept is satisfied.
+We expect these data points to lie along the same line, and taking the confidence intervals into account, all of the intercepts besides the left outlier does.
+All over, this can be considered to satisfy our normal distribution assumption.
+
+#### Sorted random intercepts plot
+
+Now we plot the *random effects* of the model, i.e. the random intercepts of each school, sorted by intercept value.
+
+```{r}
+gg2 <- plot_model(fitRI2, type = "re", sort.est = "(Intercept)", y.offset = 0.4, dot.size = 1.5) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) + 
+  labs(title = "Random intercept (RI)", x = "school", y = "math")
+gg2
+```
+
+Here we expect a normal distribution with mean zero. With other words, most of the intercepts should be clustered around $0$,
+and should be distributed symmetrically around $0$. Again, this seems to be somewhat satisfied, with a close to 50/50 split
+of negative and positive intercepts.
+
+#### Density plot of random intercept
+
+Now we plot a density plot of the predicted values $\hat{\gamma}_{0i}$.
+We compare this observed density plot with the theoretical asymptotic density of $\gamma_{0i}$ using the `dnorm` function.
+Here we use $\hat{\tau}_{0}$ for the standard deviation of the theoretical density.
+
+```{r}
+gg3 <- ggplot(data = data.frame(x = ranef(fitRI2)$school[[1]]), aes(x = x)) +
+  geom_density() + 
+  labs(x = "math", y = "density", title = "Density of RI") +
+  stat_function(
+      fun = dnorm,
+      args = list(mean = 0, sd = attr(VarCorr(fitRI2)$school, "stddev")),
+      col = "red",
+  )
+gg3
+```
+
+Although the observations seem to form a bell curve, as expected, we all observe minor negative skew in the predicted slopes.
+With other words, we observe a bit too many schools that perform quite badly.
+
+Small note: [research](https://arxiv.org/abs/cond-mat/0301523) on high schools in Brazil have observed a long tail power law
+to be applicable for the distribution of high school performance.
+
+#### Residuals plotted against fitted values
+
+Now we plot the residual values against the fitted values:
+
+```{r}
+df <- data.frame(fitted = fitted(fitRI2), resid = residuals(fitRI2, scaled = TRUE))
+gg4 <- ggplot(df, aes(fitted,resid)) +
+  geom_point(pch = 21) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_smooth(se = FALSE, col = "red", size = 0.5, method = "loess") +
+  labs(x = "Fitted values", y = "Residuals", title = "Residuals vs Fitted values")
+gg4
+```
+
+We have made the classical distributional assumption that the error terms $\varepsilon_i$ are identically and independently
+distributed with mean $0$ and common variance $\sigma^2$. We should therefore observe no discernible trend wrt. the fitted
+values. Here we use the (standardized) *residuals* as estimators for the *error* terms, and check this assumption.
+
+Luckily, the residuals seem to be symmetrically distributed around $0$ and no clear trend is visible.
+
+#### QQ-plot of standardized residuals
+
+In order to check the *normality* of the residuals, instead of only independence and mean $0$ as in the previous plot,
+we now render a QQ-plot of the standardized residuals.
+
+```{r}
+gg5 <- ggplot(df, aes(sample=resid)) +
+  stat_qq(pch = 19) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dotted") +
+  labs(x = "Theoretical quantiles", y = "Standardized residuals", title = "Normal Q-Q")
+gg5
+```
+
+Arguably, the residuals portray normal (as in distribution) behaviour, and we are relatively confident in our assumption
+of $\varepsilon_i \sim N(0, \sigma^2)$.
