@@ -177,3 +177,53 @@ $$
 $$
 
 With other words, we want to find out how probable it is that a student's `raven` score has absolutely no effect on the `math` score of the same student. We will perform this test using the *asymptotic* (normal) distribution of $\beta_{\text{raven}}$.
+
+We construct the following test statistic:
+
+$$
+z = \frac{\hat{\beta}_{\text{raven}} - 0}{\hat{se}(\beta_{\text{raven}})}
+$$
+
+Under the null hypothesis, we assume this test statistic to have a asymptotic standard normal distribution:
+
+$$
+Z \sim N_1(0, 1)
+$$
+
+We now want to calculate a two-sided $z$-test:
+
+$$
+p = 2 \cdot \text{Pr}(Z \geq |z|)
+$$
+
+We can calculate the test statistic manually:
+
+```{r}
+coefficients <- summary(fitRI1)$coefficients
+betaRavenHat <- coefficients[2, 1]
+standardErrorRavenHat <- coefficients[2, 2]
+ZStatistic <- (betaRavenHat - 0) / standardErrorRavenHat
+pValue <- 2 * pnorm(q=abs(ZStatistic), mean=0, sd=0, lower.tail=FALSE)
+pValue
+```
+
+Or by retrieving the $t$-value directly:
+
+```{r}
+tValue <- coefficients[2, 3]
+pValue <- 2 * pnorm(q=abs(tValue), mean=0, sd=0, lower.tail=FALSE)
+pValue
+```
+
+Alternatively, we can use the `lmerTest` R-package which provides $p$-values in the `lmer` summary output:
+
+```{r}
+library(lmerTest)
+fitRI1Test <- lmer(
+    math ~ raven + gender + (1 | school),
+    data = dataset,
+)
+summary(fitRI1Test)
+```
+
+All three methods yield the same result, we can relatively confidently assume `raven` scores to have an impact on `math` scores.

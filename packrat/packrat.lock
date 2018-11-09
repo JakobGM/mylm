@@ -225,6 +225,12 @@ Version: 1.1-18-1
 Hash: 1a917b09361ffb34f288e77a43a35961
 Requires: Rcpp, RcppEigen, minqa, nloptr
 
+Package: lmerTest
+Source: CRAN
+Version: 3.0-1
+Hash: 21b961e5b38cf3e56a83e86c5f733c10
+Requires: ggplot2, lme4, numDeriv
+
 Package: magrittr
 Source: CRAN
 Version: 1.5
@@ -263,6 +269,11 @@ Package: nloptr
 Source: CRAN
 Version: 1.0.4
 Hash: 8053df240a4635aeb54fc68c6de67709
+
+Package: numDeriv
+Source: CRAN
+Version: 2016.8-1
+Hash: 3a9d0fc99ba2f6aaa500b3d584962be2
 
 Package: openxlsx
 Source: CRAN
