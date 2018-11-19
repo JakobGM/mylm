@@ -526,11 +526,42 @@ gg2
 
 Again, we observe relative symmetric distribution around $0$ for both prediction types, as assumed.
 
-## e) Modeling probability of failing
-We now want to model the probability of a student failing maths instead of the individual grades, as done above.
+## e) Modelling probability to fail in maths
 
-Why is it not suitable to use a linear mixed effects model?
-What type of model would be more suitable?
-How would we add a random school intercept into this model (in which part of the model)?
-WHat is the main challenge with this type of models?
+Let's say that we now want to model the *probability* for a student to fail maths.
+A *linear* mixed effect model is not suited for this task,
+since the linear model predicts specific numerical scores on the real number interval $[-\infty, \infty]$.
 
+We are now interested in predicting a *probability* ranging from $0$ to $1$ instead.
+A more fitting *random component* for such a model would therefore be
+
+$$
+ y_{ij} \sim \text{Bin}(1, \pi_{ij}),
+$$
+
+i.e. a binomial distribution with probability $1 - \pi_{ij}$ to fail in maths.
+This requires us to fit a *generalized* linear mixed effect model, where we pre-process the math score
+such that it is dichotomized based on the failing grade cut-off:
+
+$$
+y_{ij} = \begin{cases} 0 \text{, if failing score}~ \\ 1 \text{, else} \end{cases}
+$$
+
+In order to introduce a random school intercept into the model, we choose a fitting link function $g(\pi_{ij})$,
+for example the logit link function, such that:
+
+$$
+g(\pi_{ij}) = \mathbf{X}_{ij} \beta + \gamma_{0i}
+$$
+
+With $\gamma_{0i}$ having the same properties as explained before.
+
+Such a model is not without its intrinsic difficulties, though.
+One of the main problems is the derivation of a *marginal* probability distribution for the model
+
+$$
+f(y_{ij}) = \int_{\gamma_i} f(y_{ij} | \gamma_i) f(\gamma_i) \text{d}\gamma_i.
+$$
+
+The integral of an integrand consisting of the product of a binomial *and* a normal distribution is not known to us,
+and thus we face analytical difficulties. Other numerical techniques are required, and is out of scope for this course.
