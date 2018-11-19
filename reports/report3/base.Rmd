@@ -126,7 +126,7 @@ Here follows some explanations of the different parts of the model:
 * ${\bf Y}_{i}$ is the $n_i \times 1$ **response vector** for school $i$, containing the math scores of each student enrolled in that school.
 * ${\bf X}_i$ is the $n_i \times 3$ **design matrix** of the model, containing "population covariates" for each school $i$s student on each row.
 * The $3 \times 1$ vector $\beta$ contains the **fixed effects** of the model. These "population effects" are common amongst *all* the schools.
-* The $n_i \times 1$ vector ${\bf 1} \gamma_{0i}$ contains the **random effects** of the model. Specifically in this case, since we have fitted a *random intercept model*, we have a **random intercept** and *no* random slope. ${\bf 1}$ is a $n_i \times 1$ vector containing solely ones, while $\gamma_{0i} \in ℝ$. With other words, ${\bf 1} \gamma_{0i} = [\gamma_{0i}, ..., \gamma_{0i}]^\text{T}$.
+* The $n_i \times 1$ vector ${\bf 1} \gamma_{0i}$ contains the **random effects** of the model. Specifically in this case, since we have fitted a *random intercept model*, we have a **random intercept** and *no* random slope. ${\bf 1}$ is a $n_i \times 1$ vector containing solely ones, while $\gamma_{0i} \in {\rm I\!R}$. With other words, ${\bf 1} \gamma_{0i} = [\gamma_{0i}, ..., \gamma_{0i}]^\text{T}$.
 * The $n_i \times 1$ vector $\varepsilon_{i}$ contains the **random errors** in the model prediction.
 
 
@@ -234,7 +234,7 @@ We can also construct a $95\%$ confidence interval for the effect of the female 
 confint(fitRI1, method='Wald')[5,]
 ```
 
-Since the entirety of the $95\%$ confidence interval is contained by $ℝ^+$, we can confidently conclude that girls perform better on the `math` test compared to boys.
+Since the entirety of the $95\%$ confidence interval is contained by ${\rm I\!R}^+$, we can confidently conclude that girls perform better on the `math` test compared to boys.
 
 
 ## c) Random intercept model without `gender` covariate
