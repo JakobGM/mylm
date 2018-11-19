@@ -76,7 +76,7 @@ $$
 where we assume that the $\varepsilon_k$s are independent (between students), and have mean 0 and variance $\sigma^2$ for all students. Some explanations for the terms in the model:
 
 * $Y_k$ is the **predicted** `math` score for student $k$. It is assumed to be normally distributed with mean ${\bf x}_k \pmb \beta$ and variance $\sigma^2$.
-* ${\bf x}_k$ is a $3 \times 1$ **covariate vector** for student $k$. For instance, if student $k$ is a boy with `raven` score 5, then ${\bf x}_k = [1, 0, 5]^\text{T}$. Observe that ${\bf x}_{k0}$ is always 0, since this covariate "represents" the intercept of the model.
+* ${\bf x}_k$ is a $3 \times 1$ **covariate vector** for student $k$. For instance, if student $k$ is a boy with `raven` score 5, then ${\bf x}_k = [1, 5, 0]^\text{T}$. Observe that ${\bf x}_{k0}$ is always 1, since this covariate "represents" the intercept of the model.
 * $\pmb{\beta}$ is the **regression coefficients** of the fitted model. $\pmb{\beta} = [\beta_{\text{intercept}}, \beta_{\text{raven}}, \beta_{\text{gender}}]^\text{T}$. For example, you would expect a given student to improve their `math` score by $\beta_{\text{raven}}$ if the student improves their `raven` score by one, everything else being equal.
 * $\varepsilon_k$ is the **error** in the modelled relationship for student $k$. The important part here is that $\varepsilon_k$ is assumed to be independently and identically distributed with mean $0$ and variance $\sigma^2$ for *all* students.
 
