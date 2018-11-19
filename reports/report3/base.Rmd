@@ -460,7 +460,7 @@ not applicable anymore. This is "solved" by refitting the models with the ML met
 with ANOVA analysis.
 
 The addition of social status to the model seems not to have a great impact on the log-likelihood of the model fit.
-The BIC and AIC heuristics also seem to disagree on which model to choose in this case. We would therefore opt for
+The BIC and AIC heuristics also seem to disagree on which model to choose in this case, with the model `fitRI2` yielding the smallest BIC and `fitRI3` yielding the smallest AIC. This is no big surprise, since the BIC penalizes more for higher complexity.  Since the AIC and BIC don't lead to any obvious preference, we would opt for
 the simpler model in order to prevent overfitting.
 This is an opinion loosely held, though.
 
@@ -525,3 +525,12 @@ gg2
 ```
 
 Again, we observe relative symmetric distribution around $0$ for both prediction types, as assumed.
+
+## e) Modeling probability of failing
+We now want to model the probability of a student failing maths instead of the individual grades, as done above.
+
+Why is it not suitable to use a linear mixed effects model?
+What type of model would be more suitable?
+How would we add a random school intercept into this model (in which part of the model)?
+WHat is the main challenge with this type of models?
+
